@@ -3,6 +3,9 @@ import styled from "styled-components";
 import InputHeader from "../components/InputHeader";
 import InputTextArea from "../components/InputTextArea";
 import NamesInput from "../components/NamesInput";
+import ExperienceComponent from "../components/ExperienceComponent";
+import PageHeader from "../components/PageHeader";
+import { useState } from "react";
 
 export default function ExperiencePage() {
   const navigate = useNavigate();
@@ -16,39 +19,19 @@ export default function ExperiencePage() {
   return (
     <PersonalContainer>
       <MainInput>
-        <GoBack to="/">&#60;</GoBack>
+        <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
         <InputInfo>
-          <InputHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" />
-
-          <NamesInput
-            main={"თანამდებობა"}
-            placeholder={"დეველოპერი, დიზაინერი, ა.შ."}
-            hint={"მინიმუმ 2 სიმბოლო"}
-            type={"text"}
-          />
-          <NamesInput
-            main={"დამსაქმებელი"}
-            placeholder={"დამსაქმებელი"}
-            hint={"მინიმუმ 2 სიმბოლო"}
-            type={"text"}
-          />
-          <StartEndDatesContainer>
-            <NamesInput main={"დაწყების რიცხვი"} type={"date"} />
-            <NamesInput main={"დამთავრების რიცხვი"} type={"date"} />
-          </StartEndDatesContainer>
-          <InputTextArea
-            main={"აღწერა"}
-            placeholder={"როლი თანამდებობაზე და ზოგადი აღწერა"}
-          />
-          <HorisontalLine></HorisontalLine>
+          <ExperienceComponent />
+          <ExperienceComponent />
+          <ExperienceComponent />
           <AddMoreExperiencebutton>
             მეტი გამოცდილების დამატება
           </AddMoreExperiencebutton>
-          <BackOrNextContainer>
-            <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-            <ForwardButton to={"education"}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
-          </BackOrNextContainer>
         </InputInfo>
+        <BackOrNextContainer>
+          <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
+          <ForwardButton to={"education"}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
+        </BackOrNextContainer>
       </MainInput>
       <MainOutput></MainOutput>
     </PersonalContainer>
@@ -111,18 +94,6 @@ const AddMoreExperiencebutton = styled.div`
   }
 `;
 
-const HorisontalLine = styled.div`
-  border-bottom: 1px solid #c1c1c1;
-`;
-
-const StartEndDatesContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 56px;
-`;
-
 const PersonalContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -132,18 +103,20 @@ const PersonalContainer = styled.div`
 
 const MainInput = styled.div`
   background-color: #f9f9f9;
-  display: flex;
+  display: block;
   justify-content: flex-start;
   align-items: center;
-  padding: 30px 90px 30px 0px;
-  height: 100vh;
-  width: 100vw;
+  flex-direction: column;
+  padding: 30px 90px 30px 90px;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 `;
 
 const MainOutput = styled.div`
   background-color: #ffffff;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 `;
 
 const GoBack = styled(Link)`
@@ -168,10 +141,10 @@ const GoBack = styled(Link)`
 
 const InputInfo = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-
   gap: 45px;
+  margin-bottom: 80px;
 `;

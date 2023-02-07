@@ -23,6 +23,7 @@ const PersonInputContainer = styled.div`
   align-items: flex-start;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 `;
 
 const InputName = styled.h4`

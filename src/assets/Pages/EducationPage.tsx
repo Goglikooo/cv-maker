@@ -31,7 +31,7 @@ export default function Education() {
           </AddMoreExperiencebutton>
           <BackOrNextContainer>
             <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-            <ForwardButton>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
+            <ForwardButton>ᲓᲐᲡᲠᲣᲚᲔᲑᲐ</ForwardButton>
           </BackOrNextContainer>
         </InputInfo>
       </MainInput>
