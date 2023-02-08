@@ -3,6 +3,7 @@ import InputHeader from "../components/InputHeader";
 import { Link } from "react-router-dom";
 import NamesInput from "../components/NamesInput";
 import InputTextArea from "../components/InputTextArea";
+import MainoutputCv from "../components/WholeCV";
 
 export default function PersonalInfo() {
   return (
@@ -48,7 +49,9 @@ export default function PersonalInfo() {
           <NextPageButton to="experience">ᲨᲔᲛᲓᲔᲒᲘ</NextPageButton>
         </InputInfo>
       </MainInput>
-      <MainOutput></MainOutput>
+      <MainOutput>
+        <MainoutputCv />
+      </MainOutput>
     </PersonalContainer>
   );
 }
@@ -100,8 +103,7 @@ const InputInfo = styled.div`
 `;
 
 const MainOutput = styled.div`
-  background-color: #ffffff;
-  height: 100vh;
+  height: 100%;
   width: 100vw;
 `;
 
