@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import InputTextArea from "./InputTextArea";
 import NamesInput from "./NamesInput";
+import removebutton from "../images/x.png";
 
 export default function ExperienceComponent() {
   return (

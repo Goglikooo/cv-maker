@@ -16,17 +16,46 @@ export default function ExperiencePage() {
     navigate(1);
   };
 
+  const [experienceList, setExperienceList] = useState([{ experience: "" }]);
+
+  const handleAddExperience = () => {
+    setExperienceList([...experienceList, { experience: "" }]);
+  };
+
+  const handleRemoveExperience = (index: number) => {
+    const list = [...experienceList];
+    list.splice(index, 1);
+    setExperienceList(list);
+  };
+
   return (
     <PersonalContainer>
       <MainInput>
         <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
         <InputInfo>
-          <ExperienceComponent />
-          <ExperienceComponent />
-          <ExperienceComponent />
-          <AddMoreExperiencebutton>
-            მეტი გამოცდილების დამატება
-          </AddMoreExperiencebutton>
+          {/* შეამოწმოს ერეის სიგრძე და ამის მიხედვით დააბრუნოს გამოცდილების კომპონენტი */}
+          {experienceList.map((singleExperience, index) => (
+            <ExperienceContainer key={index}>
+              {/* თუ ერეის სიგრძე არის 1 ზე მეტი, გაჩნდეს წაშლის ღილაკი კომპონენტზე */}
+              {experienceList.length > 1 && (
+                <DeleteButton
+                  onClick={() => {
+                    handleRemoveExperience(index);
+                  }}
+                >
+                  გაუქმება
+                </DeleteButton>
+              )}
+              <ExperienceComponent />
+              {/* თუ ერეის სიგრძე არ აღემატება სამს(რენდომად), გაქრეს ახალი გამოცდილების დამატების ღილაკი/ფუქცია */}
+              {experienceList.length - 1 === index &&
+                experienceList.length < 3 && (
+                  <AddMoreExperiencebutton onClick={handleAddExperience}>
+                    მეტი გამოცდილების დამატება
+                  </AddMoreExperiencebutton>
+                )}
+            </ExperienceContainer>
+          ))}
         </InputInfo>
         <BackOrNextContainer>
           <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
@@ -37,6 +66,29 @@ export default function ExperiencePage() {
     </PersonalContainer>
   );
 }
+
+const ExperienceContainer = styled.div`
+  position: relative;
+`;
+
+const DeleteButton = styled.button`
+  height: 25px;
+  width: 100px;
+  align-self: flex-end;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #d0351d;
+  color: white;
+  font-family: "HelveticaNeue";
+  font-size: 14px;
+  &:hover {
+    background-color: #ff3010;
+    cursor: pointer;
+  }
+`;
 
 const BackButton = styled.button`
   height: 48px;
@@ -78,10 +130,11 @@ const BackOrNextContainer = styled.div`
   align-items: center;
 `;
 
-const AddMoreExperiencebutton = styled.div`
+const AddMoreExperiencebutton = styled.button`
   height: 48px;
   width: 289px;
   border-radius: 4px;
+  border: none;
   background: #62a1eb;
   color: #ffffff;
   display: flex;
