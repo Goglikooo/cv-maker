@@ -9,6 +9,8 @@ import atSymbol from "../images/at-Symbol.png";
 import phoneIcon from "../images/phone-icon.png";
 import CVImage from "../images/cv-image.jpg";
 import React from "react";
+import ok from "../images/ok.png";
+import error from "../images/error.png";
 
 export default function PersonalInfo() {
   const [name, setName] = useState("");
@@ -39,24 +41,33 @@ export default function PersonalInfo() {
           <PersonNamesContainer>
             <PersonInputContainer>
               <InputName>სახელი</InputName>
-              <NameInputField
-                type="text"
-                placeholder="ანზორ"
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-              />
+              <NamesInputContainer>
+                <NameInputField
+                  type="text"
+                  placeholder="ანზორ"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <OkImage src={ok} />
+                <ErrorImage src={error} />
+              </NamesInputContainer>
+
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
             </PersonInputContainer>
             <PersonInputContainer>
               <InputName>გვარი</InputName>
-              <NameInputField
-                type="text"
-                placeholder="მუმლაძე"
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                }}
-              />
+              <NamesInputContainer>
+                <NameInputField
+                  type="text"
+                  placeholder="მუმლაძე"
+                  onChange={(e) => {
+                    setLastName(e.target.value);
+                  }}
+                />
+                <OkImage src={ok} />
+                <ErrorImage src={error} />
+              </NamesInputContainer>
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
             </PersonInputContainer>
           </PersonNamesContainer>
@@ -80,24 +91,32 @@ export default function PersonalInfo() {
           </PersonInputContainer>
           <PersonInputContainer>
             <InputName>ელ.ფოსტა</InputName>
-            <ContactInput
-              type="email"
-              placeholder="anzorr666@redberry.ge"
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-            />
+            <NamesInputContainer>
+              <ContactInput
+                type="email"
+                placeholder="anzorr666@redberry.ge"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+              <OkImage src={ok} />
+              <ErrorImage src={error} />
+            </NamesInputContainer>
             <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
           </PersonInputContainer>
           <PersonInputContainer>
             <InputName>მობილურის ნომერი</InputName>
-            <ContactInput
-              type="text"
-              placeholder="+995 551 12 34 56"
-              onChange={(e) => {
-                setPhone(e.target.value);
-              }}
-            />
+            <NamesInputContainer>
+              <ContactInput
+                type="text"
+                placeholder="+995 551 12 34 56"
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                }}
+              />
+              <OkImage src={ok} />
+              <ErrorImage src={error} />
+            </NamesInputContainer>
             <NamesHint>
               უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
             </NamesHint>
@@ -198,6 +217,36 @@ export default function PersonalInfo() {
   );
 }
 
+//names imput container
+
+const NamesInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  font-family: "HelveticaNeue";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  /* padding: 13px 16px 14px 16px; */
+  background-color: #ffffff;
+  position: relative;
+`;
+
+const OkImage = styled.img`
+  position: absolute;
+  right: 10px;
+`;
+
+const ErrorImage = styled.img`
+  position: absolute;
+  right: -30px;
+`;
+
 //personFullname
 
 const PersonFirsName = styled.h1`
@@ -243,13 +292,14 @@ const InputName = styled.h4`
   font-weight: 600;
   line-height: 21px;
   letter-spacing: 0em;
+  position: relative;
 `;
 
 const NameInputField = styled.input`
   height: 40px;
   width: 100%;
   border-radius: 4px;
-  border: 1px solid #bcbcbc;
+  border: none;
   font-family: "HelveticaNeue";
   font-size: 14px;
   font-weight: 400;
