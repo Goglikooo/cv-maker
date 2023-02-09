@@ -41,5 +41,5 @@
   src: local("MyFonts"),
     url(../src/assets/Fonts/HelveticaNeue-Bold-02.ttf) format("truetype");
   font-weight: 700;
-  font-style: normal;
+  font-style: bold;
 }

@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import NamesInput from "../components/NamesInput";
 import InputTextArea from "../components/InputTextArea";
 import MainoutputCv from "../components/WholeCV";
+import { useState } from "react";
 
 export default function PersonalInfo() {
+  const [name, setName] = useState("");
+
   return (
     <PersonalContainer>
       <MainInput>
@@ -50,7 +53,7 @@ export default function PersonalInfo() {
         </InputInfo>
       </MainInput>
       <MainOutput>
-        <MainoutputCv />
+        <MainoutputCv name={name} />
       </MainOutput>
     </PersonalContainer>
   );

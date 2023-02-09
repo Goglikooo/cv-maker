@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 interface Props {
@@ -6,15 +6,27 @@ interface Props {
   placeholder?: string;
   hint?: string;
   type: string;
+  name?: string | "";
 }
 
 export default function NamesInput(props: Props) {
   const { main, placeholder, hint, type } = props;
 
+  const [name, setName] = useState("");
+
+  function handleChange(event: any) {
+    setName(event.target.value);
+  }
+
   return (
     <PersonInputContainer>
       <InputName>{main}</InputName>
-      <NameInputField type={type} placeholder={placeholder} />
+      <NameInputField
+        type={type}
+        placeholder={placeholder}
+        value={name}
+        onChange={handleChange}
+      />
       {hint ? <NamesHint>{hint}</NamesHint> : ""}
     </PersonInputContainer>
   );
