@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Props {
@@ -14,9 +14,9 @@ export default function NamesInput(props: Props) {
 
   const [name, setName] = useState("");
 
-  function handleChange(event: any) {
-    setName(event.target.value);
-  }
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
 
   return (
     <PersonInputContainer>
@@ -24,13 +24,17 @@ export default function NamesInput(props: Props) {
       <NameInputField
         type={type}
         placeholder={placeholder}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
         value={name}
-        onChange={handleChange}
       />
       {hint ? <NamesHint>{hint}</NamesHint> : ""}
     </PersonInputContainer>
   );
 }
+
+//პირადი ინფორმაციის ინფუთების კომპონენტის დასაწყისი
 
 const PersonInputContainer = styled.div`
   display: flex;
@@ -70,3 +74,5 @@ const NamesHint = styled.span`
   line-height: 21px;
   letter-spacing: 0em;
 `;
+
+//პირადი ინფორმაციის ინფუთების კომპონენტის დასასრული

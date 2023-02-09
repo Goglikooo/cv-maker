@@ -86,6 +86,8 @@ export default function WholeCV(props: Props) {
   );
 }
 
+// მთლიანი სივის დასაწყისი
+
 const EducationDegreeDate = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -257,3 +259,5 @@ const MainContentContainer = styled.div`
   flex-direction: column;
   gap: 60px;
 `;
+
+// მთლიანი სივის დასასრული

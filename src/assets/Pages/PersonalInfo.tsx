@@ -4,10 +4,31 @@ import { Link } from "react-router-dom";
 import NamesInput from "../components/NamesInput";
 import InputTextArea from "../components/InputTextArea";
 import MainoutputCv from "../components/WholeCV";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import atSymbol from "../images/at-Symbol.png";
+import phoneIcon from "../images/phone-icon.png";
+import CVImage from "../images/cv-image.jpg";
+import React from "react";
 
 export default function PersonalInfo() {
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [aboutMe, setAboutMe] = useState("");
+  const [photoImage, setPhotoImage] = useState("");
+
+  const hiddenFileInput = React.useRef<any>(null);
+
+  const handleClick = (event: any) => {
+    hiddenFileInput.current.click();
+  };
+
+  const handleImgSave = (event: any) => {
+    setPhotoImage(URL.createObjectURL(event.target.files[0]));
+  };
+
+  useEffect(() => {}, [name, lastName, email, phone, aboutMe, photoImage]);
 
   return (
     <PersonalContainer>
@@ -16,35 +37,67 @@ export default function PersonalInfo() {
         <InputInfo>
           <InputHeader header={"ᲞᲘᲠᲐᲓᲘ ᲘᲜᲤᲝ"} pageNumber={"1/3"} />
           <PersonNamesContainer>
-            <NamesInput
-              main={"სახელი"}
-              placeholder={"ანზორ"}
-              hint={"მინიმუმ 2 ასო, ქართული ასოები"}
-              type={"text"}
-            />
-            <NamesInput
-              main={"გვარი"}
-              placeholder={"მუმლაძე"}
-              hint={"მინიმუმ 2 ასო, ქართული ასოები"}
-              type={"text"}
-            />
+            <PersonInputContainer>
+              <InputName>სახელი</InputName>
+              <NameInputField
+                type="text"
+                placeholder="ანზორ"
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+              <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+            </PersonInputContainer>
+            <PersonInputContainer>
+              <InputName>გვარი</InputName>
+              <NameInputField
+                type="text"
+                placeholder="მუმლაძე"
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                }}
+              />
+              <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+            </PersonInputContainer>
           </PersonNamesContainer>
           <PictureFieldContainer>
             <InputName>პირადი ფოტოს ატვირთვა</InputName>
-            <SelectPhoto>ატვირთვა</SelectPhoto>
+            <SelectPhotoInput
+              type="file"
+              ref={hiddenFileInput}
+              onChange={handleImgSave}
+            />
+            <SelectPhoto onClick={handleClick}>ატვირთვა</SelectPhoto>
           </PictureFieldContainer>
-          <InputTextArea
-            main={"ჩემ შესახებ (არასავალდებულო)"}
-            placeholder={"ზოგადი ინფო შენ შესახებ"}
-          />
+          <PersonInputContainer>
+            <InputName>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</InputName>
+            <AboutInput
+              placeholder="ზოგადი ინფო შენ შესახებ"
+              onChange={(e) => {
+                setAboutMe(e.target.value);
+              }}
+            />
+          </PersonInputContainer>
           <PersonInputContainer>
             <InputName>ელ.ფოსტა</InputName>
-            <ContactInput type="email" placeholder="anzorr666@redberry.ge" />
+            <ContactInput
+              type="email"
+              placeholder="anzorr666@redberry.ge"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
             <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
           </PersonInputContainer>
           <PersonInputContainer>
             <InputName>მობილურის ნომერი</InputName>
-            <ContactInput type="text" placeholder="+995 551 12 34 56" />
+            <ContactInput
+              type="text"
+              placeholder="+995 551 12 34 56"
+              onChange={(e) => {
+                setPhone(e.target.value);
+              }}
+            />
             <NamesHint>
               უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
             </NamesHint>
@@ -53,11 +106,170 @@ export default function PersonalInfo() {
         </InputInfo>
       </MainInput>
       <MainOutput>
-        <MainoutputCv name={name} />
+        <MainContentContainer>
+          <CvFirstPart>
+            <MainWithImg>
+              <FullName>
+                {name ? (
+                  <PersonFirsName>{name}</PersonFirsName>
+                ) : (
+                  <PersonFirsName />
+                )}
+                {lastName ? (
+                  <PersonLastName>{lastName}</PersonLastName>
+                ) : (
+                  <PersonLastName />
+                )}
+              </FullName>
+              <ContactDataContainer>
+                {email ? (
+                  <ContactData>
+                    <img src={atSymbol} alt="" />
+                    <InputOutput>{email}</InputOutput>
+                  </ContactData>
+                ) : (
+                  <ContactData />
+                )}
+                {phone ? (
+                  <ContactData className="phone">
+                    <img src={phoneIcon} alt="" />
+                    <InputOutput>{phone}</InputOutput>
+                  </ContactData>
+                ) : (
+                  <ContactData />
+                )}
+              </ContactDataContainer>
+              {aboutMe ? (
+                <AboutMe>
+                  <AboutMeHeader>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</AboutMeHeader>
+                  <AboutMeParagraph>{aboutMe}</AboutMeParagraph>
+                </AboutMe>
+              ) : (
+                <AboutMe />
+              )}
+            </MainWithImg>
+            <CvImage src={photoImage} alt="" />
+          </CvFirstPart>
+          <CvSecondPart>
+            <ExperienceHeader>ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ</ExperienceHeader>
+            <JobCompanyDatesContainer>
+              <JobTitleAndCompanyName>
+                <JobTitleOrCompanyName>
+                  React Native Developer,
+                </JobTitleOrCompanyName>
+                <JobTitleOrCompanyName>Microsoft</JobTitleOrCompanyName>
+              </JobTitleAndCompanyName>
+              <StartEndDate>
+                <p>2020-09-23</p>
+                <span> - </span>
+                <p>2020-09-23</p>
+              </StartEndDate>
+            </JobCompanyDatesContainer>
+            <AboutExperience>
+              Experienced Javascript Native Developer with 5 years in the
+              industry. proficient withreact. Used problem-solving aptitude to
+              encahge application performance by 14%.created data visualisation
+              tools and integrated designs.
+            </AboutExperience>
+          </CvSecondPart>
+          <CvThirdPart>
+            <EducationHeader>ᲒᲐᲜᲐᲗᲚᲔᲑᲐ</EducationHeader>
+            <EducationDegreeDate>
+              <JobTitleAndCompanyName>
+                <JobTitleOrCompanyName>
+                  წმ. ანდრიას საპატრიარქოს სასწავლებელი,
+                </JobTitleOrCompanyName>
+                <JobTitleOrCompanyName>სტუდენტი</JobTitleOrCompanyName>
+              </JobTitleAndCompanyName>
+              <StartEndDate>
+                <p>2020-09-23</p>
+              </StartEndDate>
+            </EducationDegreeDate>
+            <AboutExperience>
+              ვსწავლობდი გულმოდგინეთ. მყავდა ფრიადები. რაც შემეძლო — ვქენი.
+              კომპიუტერები მიყვარდა. ვიჯექი ჩემთვის, ვაკაკუნებდი ამ კლავიშებზე.
+              მეუნებოდნენ — დაჯექი, წაიკითხე რამე, რას აკაკუნებ, დრო მოვა და
+              ჩაგიკაკუნებსო. აჰა, მოვიდა დრო და ვერა ვარ დეველოპერი?
+            </AboutExperience>
+          </CvThirdPart>
+        </MainContentContainer>
       </MainOutput>
     </PersonalContainer>
   );
 }
+
+//personFullname
+
+const PersonFirsName = styled.h1`
+  min-width: 130px;
+  min-height: 45px;
+`;
+const PersonLastName = styled.h1`
+  min-width: 170px;
+  min-height: 45px;
+`;
+
+//about me-ს გრაფა დასაწყისი
+const AboutInput = styled.textarea`
+  height: 100px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #bcbcbc;
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  padding: 13px 16px;
+  resize: none;
+`;
+//about me-ს გრაფა დასასრული
+
+//პირადი ინფორმაციის ინფუთების კომპონენტის დასაწყისი
+
+const PersonInputContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+`;
+
+const InputName = styled.h4`
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21px;
+  letter-spacing: 0em;
+`;
+
+const NameInputField = styled.input`
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #bcbcbc;
+  font-family: "HelveticaNeue";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  padding: 13px 16px 14px 16px;
+`;
+
+const NamesHint = styled.span`
+  font-family: "HelveticaNeue";
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+`;
+
+//პირადი ინფორმაციის ინფუთების კომპონენტის დასასრული
+
+//პირადი ინფორმაციის ფეიჯი კომპონენტებით
 
 const GoBack = styled(Link)`
   font-family: "HelveticaNeue";
@@ -107,7 +319,7 @@ const InputInfo = styled.div`
 
 const MainOutput = styled.div`
   height: 100%;
-  width: 100vw;
+  width: 100%;
 `;
 
 const PersonNamesContainer = styled.div`
@@ -118,49 +330,14 @@ const PersonNamesContainer = styled.div`
   box-sizing: border-box;
 `;
 
-const PersonInputContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-direction: column;
-
-  gap: 8px;
-`;
-
-const InputName = styled.h4`
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 21px;
-  letter-spacing: 0em;
-`;
-
-const NameInputField = styled.input`
-  height: 40px;
-  width: 370px;
-  border-radius: 4px;
-  border: 1px solid #bcbcbc;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-  padding: 13px 16px 14px 16px;
-`;
-
-const NamesHint = styled.span`
-  font-family: "HelveticaNeue";
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-`;
-
 const PictureFieldContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`;
+
+const SelectPhotoInput = styled.input`
+  display: none;
 `;
 
 const SelectPhoto = styled.button`
@@ -213,3 +390,186 @@ const NextPageButton = styled(Link)`
     cursor: pointer;
   }
 `;
+
+//პირადი ინფორმაციის ფეიჯი კომპონენტებით
+
+// მთლიანი სივის დასაწყისი
+
+const EducationDegreeDate = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const EducationHeader = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0em;
+  color: #f93b1d;
+`;
+
+const CvThirdPart = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ContactDataContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const AboutExperience = styled.p`
+  font-family: "HelveticaNeue";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-transform: capitalize;
+  color: #000000;
+`;
+
+const StartEndDate = styled.div`
+  display: flex;
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 19px;
+  letter-spacing: 0em;
+  color: #999797;
+
+  gap: 5px;
+`;
+
+const JobTitleAndCompanyName = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const JobCompanyDatesContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const JobTitleOrCompanyName = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+`;
+
+const ExperienceHeader = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0em;
+  color: #f93b1d;
+`;
+
+const CvSecondPart = styled.div`
+  display: flex;
+  padding-right: 20px;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const MainWithImg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 35px;
+`;
+
+const CvImage = styled.img`
+  height: 240px;
+  width: 240px;
+  border-radius: 50%;
+`;
+
+const AboutMeParagraph = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0em;
+  word-wrap: break-word;
+  color: #000000;
+`;
+
+const AboutMeHeader = styled.h2`
+  font-family: "HelveticaNeue";
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0em;
+  color: #f93b1d;
+`;
+
+const AboutMe = styled.div`
+  display: inline-block;
+  flex-direction: column;
+  width: 500px;
+  word-wrap: break-word;
+  gap: 15px;
+
+  min-height: 120px;
+`;
+
+const InputOutput = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+`;
+
+const ContactData = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  height: 22px;
+  gap: 10px;
+`;
+
+const FullName = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: #f93b1d;
+  font-family: "HelveticaNeue";
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 42px;
+  letter-spacing: 0em;
+`;
+
+const CvFirstPart = styled.div`
+  display: flex;
+  padding-right: 20px;
+`;
+
+const MainContentContainer = styled.div`
+  width: 100%;
+  padding: 80px 100px 80px 80px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 60px;
+`;
+
+// მთლიანი სივის დასასრული
