@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import InputHeader from "../components/InputHeader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import NamesInput from "../components/NamesInput";
 import InputTextArea from "../components/InputTextArea";
 import MainoutputCv from "../components/WholeCV";
@@ -11,6 +11,8 @@ import CVImage from "../images/cv-image.jpg";
 import React from "react";
 import ok from "../images/ok.png";
 import error from "../images/error.png";
+import ExperienceComponent from "../components/ExperienceComponent";
+import PageHeader from "../components/PageHeader";
 
 export default function PersonalInfo() {
   const [name, setName] = useState("");
@@ -27,8 +29,21 @@ export default function PersonalInfo() {
   const [emailError, setEmailError] = useState(false);
   const [phoneOk, setPhoneOk] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+  const [gotToExperiencePage, setGotToExperiencePage] = useState(false);
+
+  const [position, setPosition] = useState();
+  const [employer, setEmployer] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+  const [aboutJob, setAboutJob] = useState();
 
   const hiddenFileInput = React.useRef<any>(null);
+
+  function handleNextPage() {
+    if (firsNameOk && lastNameOk && emailOk && phoneOk) {
+      setGotToExperiencePage(true);
+    }
+  }
 
   useEffect(() => {
     if (nameValidator(name)) {
@@ -50,7 +65,19 @@ export default function PersonalInfo() {
       setPhoneOk(true);
       setPhoneError(false);
     }
-  }, [name, setName, lastName, email, phone, aboutMe, photoImage]);
+  }, [
+    name,
+    setName,
+    lastName,
+    email,
+    phone,
+    aboutMe,
+    photoImage,
+    position,
+    employer,
+    startDate,
+    endDate,
+  ]);
 
   const nameValidator = (name: string) => {
     const regEx = new RegExp(/^[ა-ჰ]{2,}$/g);
@@ -107,7 +134,7 @@ export default function PersonalInfo() {
 
   const phoneNumberValidator = (phone: string) => {
     const phoneNumberValidation = new RegExp(
-      /(?:(\+995)[ -]?)(?:([0-9]{3})[ -]?)(?:([0-9]{2})[- ]?)(?:([0-9]{1,})[ -]?)([0-9]{2,})/
+      /(?:(\+995)[ -]?)(?:([0-9]{3})[ -]?)(?:([0-9]{2,})[- ]?)(?:([0-9]{2,})[ -]?)([0-9]{2,})/
     );
 
     const phoneResult = phoneNumberValidation.test(phone);
@@ -116,7 +143,7 @@ export default function PersonalInfo() {
       setPhoneError(false);
       setPhoneOk(true);
       return true;
-    } else if (email == "") {
+    } else if (phone == "") {
       setPhoneError(false);
       setPhoneOk(false);
     } else {
@@ -134,101 +161,190 @@ export default function PersonalInfo() {
     setPhotoImage(URL.createObjectURL(event.target.files[0]));
   };
 
+  //experience Page setup start
+
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  };
+  const goForward = () => {
+    navigate(1);
+  };
+
+  const [experienceList, setExperienceList] = useState([{ experience: "" }]);
+
+  const handleAddExperience = () => {
+    setExperienceList([...experienceList, { experience: "" }]);
+  };
+
+  const handleRemoveExperience = (index: number) => {
+    const list = [...experienceList];
+    list.splice(index, 1);
+    setExperienceList(list);
+  };
+
+  //experience Page setup end
+
   return (
     <PersonalContainer>
       <MainInput>
-        <GoBack to="/">&#60;</GoBack>
-        <InputInfo>
-          <InputHeader header={"ᲞᲘᲠᲐᲓᲘ ᲘᲜᲤᲝ"} pageNumber={"1/3"} />
-          <PersonNamesContainer>
-            <PersonInputContainer>
-              <InputName>სახელი</InputName>
-              <NamesInputContainer>
-                <NameInputField
-                  type="text"
-                  placeholder="ანზორ"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                />
-                {firsNameOk && <OkImage src={ok} />}
-                {firstNameError && <ErrorImage src={error} />}
-              </NamesInputContainer>
+        {/* ეს არის პირველი ფეიჯის დასაწყისი */}
 
-              <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+        {gotToExperiencePage ? (
+          ""
+        ) : (
+          <InputInfo>
+            <PageHeader header="პირადი ინფო" pageNumber="1/3" link={"/"} />
+            <PersonNamesContainer>
+              <PersonInputContainer>
+                <InputName>სახელი</InputName>
+                <NamesInputContainer>
+                  <NameInputField
+                    type="text"
+                    placeholder="ანზორ"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                  />
+                  {firsNameOk && <OkImage src={ok} />}
+                  {firstNameError && <ErrorImage src={error} />}
+                </NamesInputContainer>
+
+                <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+              </PersonInputContainer>
+              <PersonInputContainer>
+                <InputName>გვარი</InputName>
+                <NamesInputContainer>
+                  <NameInputField
+                    type="text"
+                    placeholder="მუმლაძე"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                    }}
+                  />
+                  {lastNameOk && <OkImage src={ok} />}
+                  {lastNameError && <ErrorImage src={error} />}
+                </NamesInputContainer>
+                <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+              </PersonInputContainer>
+            </PersonNamesContainer>
+            <PictureFieldContainer>
+              <InputName>პირადი ფოტოს ატვირთვა</InputName>
+              <SelectPhotoInput
+                type="file"
+                ref={hiddenFileInput}
+                onChange={handleImgSave}
+              />
+              <SelectPhoto onClick={handleClick}>ატვირთვა</SelectPhoto>
+            </PictureFieldContainer>
+            <PersonInputContainer>
+              <InputName>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</InputName>
+              <AboutInput
+                placeholder="ზოგადი ინფო შენ შესახებ"
+                onChange={(e) => {
+                  setAboutMe(e.target.value);
+                }}
+              />
             </PersonInputContainer>
             <PersonInputContainer>
-              <InputName>გვარი</InputName>
+              <InputName>ელ.ფოსტა</InputName>
               <NamesInputContainer>
-                <NameInputField
-                  type="text"
-                  placeholder="მუმლაძე"
-                  value={lastName}
+                <ContactInput
+                  type="email"
+                  placeholder="anzorr666@redberry.ge"
                   onChange={(e) => {
-                    setLastName(e.target.value);
+                    setEmail(e.target.value);
                   }}
                 />
-                {lastNameOk && <OkImage src={ok} />}
-                {lastNameError && <ErrorImage src={error} />}
+                {emailOk && <OkImage src={ok} />}
+                {emailError && <ErrorImage src={error} />}
               </NamesInputContainer>
-              <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+              <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
             </PersonInputContainer>
-          </PersonNamesContainer>
-          <PictureFieldContainer>
-            <InputName>პირადი ფოტოს ატვირთვა</InputName>
-            <SelectPhotoInput
-              type="file"
-              ref={hiddenFileInput}
-              onChange={handleImgSave}
-            />
-            <SelectPhoto onClick={handleClick}>ატვირთვა</SelectPhoto>
-          </PictureFieldContainer>
-          <PersonInputContainer>
-            <InputName>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</InputName>
-            <AboutInput
-              placeholder="ზოგადი ინფო შენ შესახებ"
-              onChange={(e) => {
-                setAboutMe(e.target.value);
-              }}
-            />
-          </PersonInputContainer>
-          <PersonInputContainer>
-            <InputName>ელ.ფოსტა</InputName>
-            <NamesInputContainer>
-              <ContactInput
-                type="email"
-                placeholder="anzorr666@redberry.ge"
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-              {emailOk && <OkImage src={ok} />}
-              {emailError && <ErrorImage src={error} />}
-            </NamesInputContainer>
-            <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
-          </PersonInputContainer>
-          <PersonInputContainer>
-            <InputName>მობილურის ნომერი</InputName>
-            <NamesInputContainer>
-              <ContactInput
-                type="text"
-                placeholder="+995 551 12 34 56"
-                onChange={(e) => {
-                  setPhone(e.target.value);
-                }}
-              />
-              {phoneOk && <OkImage src={ok} />}
-              {phoneError && <ErrorImage src={error} />}
-            </NamesInputContainer>
-            <NamesHint>
-              უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
-            </NamesHint>
-          </PersonInputContainer>
-          {/* აქედან სხვა გვერდძე არ გადავა უბრალოდ სხვა რამეს გამოაჩენს */}
-          <NextPageButton to="experience">ᲨᲔᲛᲓᲔᲒᲘ</NextPageButton>
-        </InputInfo>
+            <PersonInputContainer>
+              <InputName>მობილურის ნომერი</InputName>
+              <NamesInputContainer>
+                <ContactInput
+                  type="text"
+                  placeholder="+995 551 12 34 56"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
+                {phoneOk && <OkImage src={ok} />}
+                {phoneError && <ErrorImage src={error} />}
+              </NamesInputContainer>
+              <NamesHint>
+                უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
+              </NamesHint>
+            </PersonInputContainer>
+            {/* აქედან სხვა გვერდძე არ გადავა უბრალოდ სხვა რამეს გამოაჩენს */}
+
+            <NextPageButton onClick={handleNextPage}>ᲨᲔᲛᲓᲔᲒᲘ</NextPageButton>
+          </InputInfo>
+        )}
+
+        {/* ეს არის პირველი ფეიჯის დასასრული */}
+
+        {gotToExperiencePage && (
+          <PersonalContainerExperience>
+            <InputInfo>
+              <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
+              {/* შეამოწმოს ერეის სიგრძე და ამის მიხედვით დააბრუნოს გამოცდილების კომპონენტი */}
+              {experienceList.map((singleExperience, index) => (
+                <ExperienceContainer key={index}>
+                  {/* თუ ერეის სიგრძე არის 1 ზე მეტი, გაჩნდეს წაშლის ღილაკი კომპონენტზე */}
+                  {experienceList.length > 1 && (
+                    <DeleteButton
+                      onClick={() => {
+                        handleRemoveExperience(index);
+                      }}
+                    >
+                      გაუქმება
+                    </DeleteButton>
+                  )}
+                  <ExperienceComponent
+                    onChangeName={(e: any) => {
+                      setPosition(e.target.value);
+                    }}
+                    onChangeEmployer={(e: any) => {
+                      setEmployer(e.target.value);
+                    }}
+                    onChangeStartDate={(e: any) => {
+                      setStartDate(e.target.value);
+                    }}
+                    onChangeEndDate={(e: any) => {
+                      setEndDate(e.target.value);
+                    }}
+                    aboutJob={(e: any) => {
+                      setAboutJob(e.target.value);
+                    }}
+                    positionValue={position}
+                    employerValue={employer}
+                    startDateValue={startDate}
+                    endDateValue={endDate}
+                    textAreaValue={aboutJob}
+                  />
+                  {/* თუ ერეის სიგრძე არ აღემატება სამს(რენდომად), გაქრეს ახალი გამოცდილების დამატების ღილაკი/ფუქცია */}
+                  {experienceList.length - 1 === index &&
+                    experienceList.length < 3 && (
+                      <AddMoreExperiencebutton onClick={handleAddExperience}>
+                        მეტი გამოცდილების დამატება
+                      </AddMoreExperiencebutton>
+                    )}
+                </ExperienceContainer>
+              ))}
+            </InputInfo>
+            <BackOrNextContainer>
+              <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
+              <ForwardButton to={"education"}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
+            </BackOrNextContainer>
+          </PersonalContainerExperience>
+        )}
       </MainInput>
+
       <MainOutput>
         <MainContentContainer>
           <CvFirstPart>
@@ -274,28 +390,23 @@ export default function PersonalInfo() {
             </MainWithImg>
             {photoImage && <CvImage src={photoImage} alt="" />}
           </CvFirstPart>
-          <CvSecondPart>
-            <ExperienceHeader>ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ</ExperienceHeader>
-            <JobCompanyDatesContainer>
-              <JobTitleAndCompanyName>
-                <JobTitleOrCompanyName>
-                  React Native Developer,
-                </JobTitleOrCompanyName>
-                <JobTitleOrCompanyName>Microsoft</JobTitleOrCompanyName>
-              </JobTitleAndCompanyName>
-              <StartEndDate>
-                <p>2020-09-23</p>
-                <span> - </span>
-                <p>2020-09-23</p>
-              </StartEndDate>
-            </JobCompanyDatesContainer>
-            <AboutExperience>
-              Experienced Javascript Native Developer with 5 years in the
-              industry. proficient withreact. Used problem-solving aptitude to
-              encahge application performance by 14%.created data visualisation
-              tools and integrated designs.
-            </AboutExperience>
-          </CvSecondPart>
+          {position && (
+            <CvSecondPart>
+              <ExperienceHeader>ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ</ExperienceHeader>
+              <JobCompanyDatesContainer>
+                <JobTitleAndCompanyName>
+                  <JobTitleOrCompanyName>{position},</JobTitleOrCompanyName>
+                  <JobTitleOrCompanyName>{employer}</JobTitleOrCompanyName>
+                </JobTitleAndCompanyName>
+                <StartEndDate>
+                  <p>{startDate}</p>
+                  <span> - </span>
+                  <p>{endDate}</p>
+                </StartEndDate>
+              </JobCompanyDatesContainer>
+              <AboutExperience>{aboutJob}</AboutExperience>
+            </CvSecondPart>
+          )}
           <CvThirdPart>
             <EducationHeader>ᲒᲐᲜᲐᲗᲚᲔᲑᲐ</EducationHeader>
             <EducationDegreeDate>
@@ -321,6 +432,109 @@ export default function PersonalInfo() {
     </PersonalContainer>
   );
 }
+
+// experiencepage styles start
+
+const ExperienceContainer = styled.div`
+  position: relative;
+`;
+
+const DeleteButton = styled.button`
+  height: 25px;
+  width: 100px;
+  align-self: flex-end;
+  margin: 0;
+  position: absolute;
+  right: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: #d0351d;
+  color: white;
+  font-family: "HelveticaNeue";
+  font-size: 14px;
+  &:hover {
+    background-color: #ff3010;
+    cursor: pointer;
+  }
+`;
+
+const BackButton = styled.button`
+  height: 48px;
+  width: 113px;
+  background: #6b40e3;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  border: none;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const ForwardButton = styled(Link)`
+  height: 48px;
+  width: 151px;
+  background: #6b40e3;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const BackOrNextContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+`;
+
+const AddMoreExperiencebutton = styled.button`
+  height: 48px;
+  width: 289px;
+  border-radius: 4px;
+  border: none;
+  background: #62a1eb;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    background: #5195e3;
+  }
+`;
+
+const PersonalContainerExperience = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+`;
+
+// const InputInfo = styled.div`
+//   width: 100%;
+//   height: auto;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-start;
+//   gap: 45px;
+//   margin-bottom: 80px;
+// `;
+
+// esperiencepahe styles end
 
 //names imput container
 
@@ -458,18 +672,21 @@ const MainInput = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px 90px 30px 0px;
+  padding: 30px 90px 30px 90px;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  overflow: auto;
 `;
 
 const InputInfo = styled.div`
   width: 100%;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 45px;
+
+  margin-bottom: 80px;
 `;
 
 const MainOutput = styled.div`
@@ -520,7 +737,7 @@ const ContactInput = styled.input`
   padding: 13px 16px;
 `;
 
-const NextPageButton = styled(Link)`
+const NextPageButton = styled.button`
   align-self: flex-end;
   display: flex;
   justify-content: center;
@@ -654,7 +871,6 @@ const CvImage = styled.img`
   width: 240px;
   border-radius: 50%;
   border: none;
-  background-color: white;
 `;
 
 const AboutMeParagraph = styled.p`
@@ -716,7 +932,7 @@ const FullName = styled.div`
 
 const CvFirstPart = styled.div`
   display: flex;
-  padding-right: 20px;
+  /* padding-right: 0px; */
 `;
 
 const MainContentContainer = styled.div`

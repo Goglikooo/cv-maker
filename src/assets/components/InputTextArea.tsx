@@ -4,15 +4,21 @@ import styled from "styled-components";
 interface Props {
   main: string;
   placeholder: string;
+  onChange: any;
+  textAreaValue: string;
 }
 
 export default function InputTextArea(props: Props) {
-  const { main, placeholder } = props;
+  const { main, placeholder, onChange, textAreaValue } = props;
 
   return (
     <PersonInputContainer>
       <InputName>{main}</InputName>
-      <AboutInput placeholder={placeholder} />
+      <AboutInput
+        placeholder={placeholder}
+        onChange={onChange}
+        value={textAreaValue}
+      />
     </PersonInputContainer>
   );
 }

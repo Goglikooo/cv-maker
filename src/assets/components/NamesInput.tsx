@@ -7,16 +7,12 @@ interface Props {
   hint?: string;
   type: string;
   name?: string | "";
+  onChange: any;
+  value: any;
 }
 
 export default function NamesInput(props: Props) {
-  const { main, placeholder, hint, type } = props;
-
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
+  const { main, placeholder, hint, type, onChange, value } = props;
 
   return (
     <PersonInputContainer>
@@ -24,10 +20,8 @@ export default function NamesInput(props: Props) {
       <NameInputField
         type={type}
         placeholder={placeholder}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-        value={name}
+        onChange={onChange}
+        value={value}
       />
       {hint ? <NamesHint>{hint}</NamesHint> : ""}
     </PersonInputContainer>
