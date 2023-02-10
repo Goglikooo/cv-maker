@@ -19,8 +19,29 @@ export default function PersonalInfo() {
   const [phone, setPhone] = useState("");
   const [aboutMe, setAboutMe] = useState("");
   const [photoImage, setPhotoImage] = useState("");
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
 
   const hiddenFileInput = React.useRef<any>(null);
+
+  const nameValidator = () => {
+    const regEx = new RegExp("/[ა-ზ]{2,}/g");
+    if (regEx.test(name)) {
+      console.log("yvelaferi sworia");
+    } else {
+      console.log("sheiyvane min 2 ricxvi da qartulad");
+    }
+  };
+
+  const regExEmail = () => {
+    const regExEmailValidator = new RegExp("/^[a-zA-Z](@redberry/.ge)$/");
+  };
+
+  const phoneNumberValidator = () => {
+    const phoneNumberValidation = new RegExp(
+      "/((+)?d{3,})?([ -])?(d{2,})([ -])?(d{2,})?/"
+    );
+  };
 
   const handleClick = (event: any) => {
     hiddenFileInput.current.click();
@@ -49,11 +70,12 @@ export default function PersonalInfo() {
                     setName(e.target.value);
                   }}
                 />
-                <OkImage src={ok} />
-                <ErrorImage src={error} />
+                {name.length > 2 && <OkImage src={ok} />}
+                {firstNameError ? <ErrorImage src={error} /> : ""}
               </NamesInputContainer>
 
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
+              <button onClick={nameValidator}>ragacaa</button>
             </PersonInputContainer>
             <PersonInputContainer>
               <InputName>გვარი</InputName>
@@ -61,12 +83,13 @@ export default function PersonalInfo() {
                 <NameInputField
                   type="text"
                   placeholder="მუმლაძე"
+                  value={name}
                   onChange={(e) => {
                     setLastName(e.target.value);
                   }}
                 />
-                <OkImage src={ok} />
-                <ErrorImage src={error} />
+                {lastName.length > 2 && <OkImage src={ok} />}
+                {lastNameError ? <ErrorImage src={error} /> : ""}
               </NamesInputContainer>
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
             </PersonInputContainer>
