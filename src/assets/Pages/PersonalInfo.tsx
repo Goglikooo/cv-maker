@@ -23,6 +23,10 @@ export default function PersonalInfo() {
   const [firsNameOk, setFirsNameOk] = useState(false);
   const [lastNameOk, setLastNameOk] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
+  const [emailOk, setEmailOk] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [phoneOk, setPhoneOk] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
 
   const hiddenFileInput = React.useRef<any>(null);
 
@@ -36,6 +40,16 @@ export default function PersonalInfo() {
       setLastNameOk(true);
       setLastNameError(false);
     }
+
+    if (regExEmail(email)) {
+      setEmailOk(true);
+      setEmailError(false);
+    }
+
+    if (phoneNumberValidator(phone)) {
+      setPhoneOk(true);
+      setPhoneError(false);
+    }
   }, [name, setName, lastName, email, phone, aboutMe, photoImage]);
 
   const nameValidator = (name: string) => {
@@ -44,7 +58,6 @@ export default function PersonalInfo() {
     if (result) {
       setFirstNameError(false);
       setFirsNameOk(true);
-
       return true;
     } else if (name == "") {
       setFirstNameError(false);
@@ -52,7 +65,6 @@ export default function PersonalInfo() {
     } else {
       setFirstNameError(true);
       setFirsNameOk(false);
-
       return false;
     }
   };
@@ -63,7 +75,6 @@ export default function PersonalInfo() {
     if (result) {
       setLastNameError(false);
       setLastNameOk(true);
-
       return true;
     } else if (name == "") {
       setLastNameError(false);
@@ -71,19 +82,48 @@ export default function PersonalInfo() {
     } else {
       setLastNameError(true);
       setLastNameOk(false);
-
       return false;
     }
   };
 
-  const regExEmail = () => {
-    const regExEmailValidator = new RegExp("/^[a-zA-Z](@redberry/.ge)$/");
+  const regExEmail = (email: string) => {
+    const regExEmailValidator = new RegExp(
+      /((^[a-zA-Z0-9]{1,})?(\.|\_|\-|\+)?([a-zA-Z0-9]){1,}?(\.|\_|\-|\+)?([a-zA-Z0-9]){1,}(\@redberry.ge))/
+    );
+    const emailResult = regExEmailValidator.test(email);
+    if (emailResult) {
+      setEmailError(false);
+      setEmailOk(true);
+      return true;
+    } else if (email == "") {
+      setEmailError(false);
+      setEmailOk(false);
+    } else {
+      setEmailError(true);
+      setEmailOk(false);
+      return false;
+    }
   };
 
-  const phoneNumberValidator = () => {
+  const phoneNumberValidator = (phone: string) => {
     const phoneNumberValidation = new RegExp(
-      "/((+)?d{3,})?([ -])?(d{2,})([ -])?(d{2,})?/"
+      /(?:(\+995)[ -]?)(?:([0-9]{3})[ -]?)(?:([0-9]{2})[- ]?)(?:([0-9]{1,})[ -]?)([0-9]{2,})/
     );
+
+    const phoneResult = phoneNumberValidation.test(phone);
+
+    if (phoneResult) {
+      setPhoneError(false);
+      setPhoneOk(true);
+      return true;
+    } else if (email == "") {
+      setPhoneError(false);
+      setPhoneOk(false);
+    } else {
+      setPhoneError(true);
+      setPhoneOk(false);
+      return false;
+    }
   };
 
   const handleClick = (event: any) => {
@@ -113,7 +153,7 @@ export default function PersonalInfo() {
                   }}
                 />
                 {firsNameOk && <OkImage src={ok} />}
-                {firstNameError ? <ErrorImage src={error} /> : ""}
+                {firstNameError && <ErrorImage src={error} />}
               </NamesInputContainer>
 
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
@@ -130,7 +170,7 @@ export default function PersonalInfo() {
                   }}
                 />
                 {lastNameOk && <OkImage src={ok} />}
-                {lastNameError ? <ErrorImage src={error} /> : ""}
+                {lastNameError && <ErrorImage src={error} />}
               </NamesInputContainer>
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
             </PersonInputContainer>
@@ -163,8 +203,8 @@ export default function PersonalInfo() {
                   setEmail(e.target.value);
                 }}
               />
-              <OkImage src={ok} />
-              <ErrorImage src={error} />
+              {emailOk && <OkImage src={ok} />}
+              {emailError && <ErrorImage src={error} />}
             </NamesInputContainer>
             <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
           </PersonInputContainer>
@@ -178,13 +218,14 @@ export default function PersonalInfo() {
                   setPhone(e.target.value);
                 }}
               />
-              <OkImage src={ok} />
-              <ErrorImage src={error} />
+              {phoneOk && <OkImage src={ok} />}
+              {phoneError && <ErrorImage src={error} />}
             </NamesInputContainer>
             <NamesHint>
               უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
             </NamesHint>
           </PersonInputContainer>
+          {/* აქედან სხვა გვერდძე არ გადავა უბრალოდ სხვა რამეს გამოაჩენს */}
           <NextPageButton to="experience">ᲨᲔᲛᲓᲔᲒᲘ</NextPageButton>
         </InputInfo>
       </MainInput>
