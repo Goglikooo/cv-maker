@@ -20,16 +20,59 @@ export default function PersonalInfo() {
   const [aboutMe, setAboutMe] = useState("");
   const [photoImage, setPhotoImage] = useState("");
   const [firstNameError, setFirstNameError] = useState(false);
+  const [firsNameOk, setFirsNameOk] = useState(false);
+  const [lastNameOk, setLastNameOk] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
 
   const hiddenFileInput = React.useRef<any>(null);
 
-  const nameValidator = () => {
-    const regEx = new RegExp("/[ა-ზ]{2,}/g");
-    if (regEx.test(name)) {
-      console.log("yvelaferi sworia");
+  useEffect(() => {
+    if (nameValidator(name)) {
+      setFirsNameOk(true);
+      setFirstNameError(false);
+    }
+
+    if (lastNameValidator(lastName)) {
+      setLastNameOk(true);
+      setLastNameError(false);
+    }
+  }, [name, setName, lastName, email, phone, aboutMe, photoImage]);
+
+  const nameValidator = (name: string) => {
+    const regEx = new RegExp(/^[ა-ჰ]{2,}$/g);
+    const result = regEx.test(name);
+    if (result) {
+      setFirstNameError(false);
+      setFirsNameOk(true);
+
+      return true;
+    } else if (name == "") {
+      setFirstNameError(false);
+      setFirsNameOk(false);
     } else {
-      console.log("sheiyvane min 2 ricxvi da qartulad");
+      setFirstNameError(true);
+      setFirsNameOk(false);
+
+      return false;
+    }
+  };
+
+  const lastNameValidator = (name: string) => {
+    const regEx = new RegExp(/^[ა-ჰ]{2,}$/g);
+    const result = regEx.test(name);
+    if (result) {
+      setLastNameError(false);
+      setLastNameOk(true);
+
+      return true;
+    } else if (name == "") {
+      setLastNameError(false);
+      setLastNameOk(false);
+    } else {
+      setLastNameError(true);
+      setLastNameOk(false);
+
+      return false;
     }
   };
 
@@ -51,8 +94,6 @@ export default function PersonalInfo() {
     setPhotoImage(URL.createObjectURL(event.target.files[0]));
   };
 
-  useEffect(() => {}, [name, lastName, email, phone, aboutMe, photoImage]);
-
   return (
     <PersonalContainer>
       <MainInput>
@@ -66,16 +107,16 @@ export default function PersonalInfo() {
                 <NameInputField
                   type="text"
                   placeholder="ანზორ"
+                  value={name}
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
                 />
-                {name.length > 2 && <OkImage src={ok} />}
+                {firsNameOk && <OkImage src={ok} />}
                 {firstNameError ? <ErrorImage src={error} /> : ""}
               </NamesInputContainer>
 
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
-              <button onClick={nameValidator}>ragacaa</button>
             </PersonInputContainer>
             <PersonInputContainer>
               <InputName>გვარი</InputName>
@@ -83,12 +124,12 @@ export default function PersonalInfo() {
                 <NameInputField
                   type="text"
                   placeholder="მუმლაძე"
-                  value={name}
+                  value={lastName}
                   onChange={(e) => {
                     setLastName(e.target.value);
                   }}
                 />
-                {lastName.length > 2 && <OkImage src={ok} />}
+                {lastNameOk && <OkImage src={ok} />}
                 {lastNameError ? <ErrorImage src={error} /> : ""}
               </NamesInputContainer>
               <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
@@ -190,7 +231,7 @@ export default function PersonalInfo() {
                 <AboutMe />
               )}
             </MainWithImg>
-            <CvImage src={photoImage} alt="" />
+            {photoImage && <CvImage src={photoImage} alt="" />}
           </CvFirstPart>
           <CvSecondPart>
             <ExperienceHeader>ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ</ExperienceHeader>
@@ -571,6 +612,8 @@ const CvImage = styled.img`
   height: 240px;
   width: 240px;
   border-radius: 50%;
+  border: none;
+  background-color: white;
 `;
 
 const AboutMeParagraph = styled.p`
