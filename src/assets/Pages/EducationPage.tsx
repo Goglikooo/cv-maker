@@ -11,7 +11,7 @@ export default function Education() {
     navigate(-1);
   };
   return (
-    <PersonalContainer>
+    <PersonalEducationContainer>
       <MainInput>
         <GoBack to="/">&#60;</GoBack>
         <InputInfo>
@@ -35,12 +35,11 @@ export default function Education() {
           </BackOrNextContainer>
         </InputInfo>
       </MainInput>
-      <MainOutput></MainOutput>
-    </PersonalContainer>
+    </PersonalEducationContainer>
   );
 }
 
-const PersonalContainer = styled.div`
+const PersonalEducationContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

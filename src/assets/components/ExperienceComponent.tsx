@@ -2,6 +2,7 @@ import styled from "styled-components";
 import InputTextArea from "./InputTextArea";
 import NamesInput from "./NamesInput";
 import removebutton from "../images/x.png";
+import error from "../images/error.png";
 
 interface Props {
   onChangeName: any;
@@ -14,6 +15,11 @@ interface Props {
   endDateValue: any;
   textAreaValue: any;
   aboutJob: any;
+  invalidPosition?: boolean;
+  invalidEmployer?: boolean;
+  experienceStartDate?: boolean;
+  experienceEndDate?: boolean;
+  textAreaRequired?: boolean;
 }
 
 export default function ExperienceComponent(props: Props) {
@@ -28,6 +34,11 @@ export default function ExperienceComponent(props: Props) {
     endDateValue,
     textAreaValue,
     aboutJob,
+    invalidPosition,
+    invalidEmployer,
+    experienceStartDate,
+    experienceEndDate,
+    textAreaRequired,
   } = props;
 
   return (
@@ -39,7 +50,9 @@ export default function ExperienceComponent(props: Props) {
         type={"text"}
         onChange={onChangeName}
         value={positionValue}
+        invalid={invalidPosition}
       />
+
       <NamesInput
         main={"დამსაქმებელი"}
         placeholder={"დამსაქმებელი"}
@@ -47,31 +60,44 @@ export default function ExperienceComponent(props: Props) {
         type={"text"}
         onChange={onChangeEmployer}
         value={employerValue}
+        invalid={invalidEmployer}
       />
       <StartEndDatesContainer>
-        <NamesInput
-          main={"დაწყების რიცხვი"}
-          type={"date"}
-          onChange={onChangeStartDate}
-          value={startDateValue}
-        />
-        <NamesInput
-          main={"დამთავრების რიცხვი"}
-          type={"date"}
-          onChange={onChangeEndDate}
-          value={endDateValue}
-        />
+        <StartDate>
+          <NamesInput
+            main={"დაწყების რიცხვი"}
+            type={"date"}
+            onChange={onChangeStartDate}
+            value={startDateValue}
+          />
+          {experienceStartDate && <ErrorImage src={error} />}
+        </StartDate>
+        <StartDate>
+          <NamesInput
+            main={"დამთავრების რიცხვი"}
+            type={"date"}
+            onChange={onChangeEndDate}
+            value={endDateValue}
+          />
+          {experienceEndDate && <ErrorImage src={error} />}
+        </StartDate>
       </StartEndDatesContainer>
       <InputTextArea
         main={"აღწერა"}
         placeholder={"როლი თანამდებობაზე და ზოგადი აღწერა"}
         onChange={aboutJob}
         textAreaValue={textAreaValue}
+        textAreaRequired={textAreaRequired}
       />
       <HorisontalLine></HorisontalLine>
     </ExperienceComponentContainer>
   );
 }
+
+const StartDate = styled.div`
+  width: 100%;
+  position: relative;
+`;
 
 const HorisontalLine = styled.div`
   border-bottom: 1px solid #c1c1c1;
@@ -92,4 +118,10 @@ const StartEndDatesContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 56px;
+`;
+
+const ErrorImage = styled.img`
+  position: absolute;
+  right: -30px;
+  top: 40px;
 `;

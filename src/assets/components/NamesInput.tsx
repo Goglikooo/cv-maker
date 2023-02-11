@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import ok from "../images/ok.png";
+import error from "../images/error.png";
 
 interface Props {
   main: string;
@@ -9,10 +11,11 @@ interface Props {
   name?: string | "";
   onChange: any;
   value: any;
+  invalid?: boolean;
 }
 
 export default function NamesInput(props: Props) {
-  const { main, placeholder, hint, type, onChange, value } = props;
+  const { main, placeholder, hint, type, onChange, value, invalid } = props;
 
   return (
     <PersonInputContainer>
@@ -22,7 +25,11 @@ export default function NamesInput(props: Props) {
         placeholder={placeholder}
         onChange={onChange}
         value={value}
+        required
       />
+
+      {invalid && <ErrorImage src={error} />}
+
       {hint ? <NamesHint>{hint}</NamesHint> : ""}
     </PersonInputContainer>
   );
@@ -37,6 +44,7 @@ const PersonInputContainer = styled.div`
   flex-direction: column;
   width: 100%;
   gap: 8px;
+  position: relative;
 `;
 
 const InputName = styled.h4`
@@ -57,7 +65,7 @@ const NameInputField = styled.input`
   font-weight: 400;
   line-height: 21px;
   letter-spacing: 0em;
-  text-align: left;
+
   padding: 13px 16px 14px 16px;
 `;
 
@@ -70,3 +78,14 @@ const NamesHint = styled.span`
 `;
 
 //პირადი ინფორმაციის ინფუთების კომპონენტის დასასრული
+
+const OkImage = styled.img`
+  position: absolute;
+  right: 10px;
+`;
+
+const ErrorImage = styled.img`
+  position: absolute;
+  right: -30px;
+  top: 40px;
+`;

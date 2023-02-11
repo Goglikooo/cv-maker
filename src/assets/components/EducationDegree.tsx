@@ -1,10 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import arrowdown from "../images/down-arrow.png";
 import NamesInput from "./NamesInput";
+import axios from "axios";
+import error from "../images/error.png";
+
+interface Degrees {
+  id: number;
+  title: string;
+}
 
 export default function EducationDegree() {
   const [showDegree, setShowDegree] = useState(false);
+  const [degree, setdegree] = useState<Degrees[] | null>(null);
+  const [selectedDegree, setselectedDegree] = useState("");
+
+  useEffect(() => {
+    const requestDegree = async () => {
+      const response = await axios.get(
+        "https://resume.redberryinternship.ge/api/degrees"
+      );
+      const data = response.data;
+      setdegree(data);
+    };
+    requestDegree();
+  }, []);
 
   return (
     <EducationContainer>
@@ -15,33 +35,55 @@ export default function EducationDegree() {
             setShowDegree(!showDegree);
           }}
         >
-          <ChooseDegree>აირჩიეთ ხარისხი</ChooseDegree>
+          <ChooseDegree>
+            {selectedDegree ? selectedDegree : "აირჩიეთ ხარისხი"}
+          </ChooseDegree>
           <Button>
             <DownArrow src={arrowdown} alt="" />
           </Button>
+          <ErrorImage src={error} />
         </DegreeOptionsContainer>
-        {showDegree ? (
+        {showDegree && (
           <DegreeOptions>
-            <ol>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-              <li>asd</li>
-            </ol>
+            <List>
+              {degree &&
+                degree.map((degrees) => (
+                  <ListItem
+                    key={degrees.id}
+                    onClick={() => {
+                      setselectedDegree(degrees.title);
+                      setShowDegree(!showDegree);
+                    }}
+                  >
+                    {degrees.title}
+                  </ListItem>
+                ))}
+            </List>
           </DegreeOptions>
-        ) : (
-          ""
         )}
       </DegreeDiv>
-      <NamesInput main={"დამთავრების რიცხვი"} type={"date"} />
+      <NamesInput
+        main={"დამთავრების რიცხვი"}
+        type={"date"}
+        onChange={() => {}}
+        value={"r"}
+      />
     </EducationContainer>
   );
 }
+
+const ListItem = styled.li`
+  list-style-type: none;
+  padding-left: 20px;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
+const List = styled.ul`
+  padding: 0px;
+  width: 100%;
+`;
 
 const DownArrow = styled.img`
   width: 20px;
@@ -58,7 +100,7 @@ const DegreeOptions = styled.div`
   box-sizing: border-box;
   position: absolute;
   top: 69px;
-  padding: 10px 16px 14px 20px;
+  padding: 0px 0px 0px 0px;
   border-radius: 5px;
   box-shadow: 5px 5px 10px 0px #e4e4e4;
   background: #ffffff;
@@ -88,6 +130,7 @@ const DegreeOptionsContainer = styled.div`
   padding: 10px 16px 14px 16px;
   display: flex;
   justify-content: space-between;
+  position: relative;
 `;
 
 const EducationContainer = styled.div`
@@ -96,6 +139,7 @@ const EducationContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 56px;
+  position: relative;
 `;
 
 const DegreeDiv = styled.div`
@@ -106,6 +150,7 @@ const DegreeDiv = styled.div`
   width: 100%;
   gap: 8px;
   position: relative;
+  z-index: 200000;
 `;
 
 const DegreeName = styled.h4`
@@ -116,4 +161,10 @@ const DegreeName = styled.h4`
   letter-spacing: 0em;
   padding: 0;
   margin: 0px;
+`;
+
+const ErrorImage = styled.img`
+  position: absolute;
+  /* right: -30px;
+  top: 40px; */
 `;

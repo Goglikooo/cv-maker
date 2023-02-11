@@ -1,15 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-
+import error from "../images/error.png";
 interface Props {
   main: string;
   placeholder: string;
   onChange: any;
   textAreaValue: string;
+  textAreaRequired?: boolean;
 }
 
 export default function InputTextArea(props: Props) {
-  const { main, placeholder, onChange, textAreaValue } = props;
+  const { main, placeholder, onChange, textAreaValue, textAreaRequired } =
+    props;
 
   return (
     <PersonInputContainer>
@@ -19,6 +21,7 @@ export default function InputTextArea(props: Props) {
         onChange={onChange}
         value={textAreaValue}
       />
+      {textAreaRequired && <ErrorImage src={error} />}
     </PersonInputContainer>
   );
 }
@@ -30,6 +33,8 @@ const PersonInputContainer = styled.div`
   flex-direction: column;
   gap: 8px;
   width: 100%;
+  position: relative;
+  z-index: 1;
 `;
 
 const InputName = styled.h4`
@@ -53,4 +58,11 @@ const AboutInput = styled.textarea`
   text-align: left;
   padding: 13px 16px;
   resize: none;
+  text-transform: none;
+`;
+
+const ErrorImage = styled.img`
+  position: absolute;
+  right: -30px;
+  top: 40px;
 `;

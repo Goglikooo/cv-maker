@@ -7,12 +7,14 @@ import MainoutputCv from "../components/WholeCV";
 import { useEffect, useState, useRef } from "react";
 import atSymbol from "../images/at-Symbol.png";
 import phoneIcon from "../images/phone-icon.png";
-import CVImage from "../images/cv-image.jpg";
 import React from "react";
 import ok from "../images/ok.png";
 import error from "../images/error.png";
 import ExperienceComponent from "../components/ExperienceComponent";
 import PageHeader from "../components/PageHeader";
+import EducationDegree from "../components/EducationDegree";
+import axios from "axios";
+import arrowdown from "../images/down-arrow.png";
 
 export default function PersonalInfo() {
   const [name, setName] = useState("");
@@ -20,7 +22,9 @@ export default function PersonalInfo() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [aboutMe, setAboutMe] = useState("");
+
   const [photoImage, setPhotoImage] = useState("");
+  const [photoImageError, setPhotoImageError] = useState(false);
   const [firstNameError, setFirstNameError] = useState(false);
   const [firsNameOk, setFirsNameOk] = useState(false);
   const [lastNameOk, setLastNameOk] = useState(false);
@@ -29,21 +33,102 @@ export default function PersonalInfo() {
   const [emailError, setEmailError] = useState(false);
   const [phoneOk, setPhoneOk] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [gotToExperiencePage, setGotToExperiencePage] = useState(false);
+  const [goToPersonalPage, setGoToPersonalPage] = useState(false);
+  const [goToExperiencePage, setGoToExperiencePage] = useState(false);
+  const [goToEducationPage, setGoToEducationPage] = useState(true);
 
-  const [position, setPosition] = useState();
-  const [employer, setEmployer] = useState();
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
-  const [aboutJob, setAboutJob] = useState();
+  const [position, setPosition] = useState("");
+  const [invalidPosition, setIvalidPosition] = useState(false);
+  const [invalidEmployer, setInvalidEmployer] = useState(false);
+
+  const [employer, setEmployer] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [aboutJob, setAboutJob] = useState("");
+  const [experienceStartdate, setExperienceStartdate] = useState(false);
+  const [experienceEnddate, setExperienceEnddate] = useState(false);
+  const [textAreaRequired, setTextAreaRequired] = useState(false);
+
+  const [showDegree, setShowDegree] = useState(false);
+  const [degree, setdegree] = useState<Degrees[] | null>(null);
+  const [selectedDegree, setselectedDegree] = useState("");
+  const [selectedDegreeError, setselectedDegreeError] = useState(false);
+  const [universityName, setUniversityName] = useState("");
+  const [universityNameError, setUniversityNameError] = useState(false);
+  const [universityEndDate, setUniversityEndDate] = useState("");
+  const [universityDescription, setUniversityDescription] = useState("");
+
+  interface Degrees {
+    id: number;
+    title: string;
+  }
 
   const hiddenFileInput = React.useRef<any>(null);
 
-  function handleNextPage() {
-    if (firsNameOk && lastNameOk && emailOk && phoneOk) {
-      setGotToExperiencePage(true);
+  const sendFinalResult = () => {
+    if (universityName == "") {
+      setUniversityNameError(true);
+    }
+    if (selectedDegree == "") {
+      setselectedDegreeError(true);
+    }
+  };
+
+  function handleNextPageExperience() {
+    if (firsNameOk && lastNameOk && emailOk && phoneOk && photoImage) {
+      setGoToExperiencePage(true);
+      setGoToPersonalPage(false);
+    }
+    if (nameValidator(name) === false) {
+      setFirstNameError(true);
+    }
+    if (lastNameValidator(lastName) === false) {
+      setLastNameError(true);
+    }
+    if (emailValidator(email) === false) {
+      setEmailError(true);
+    }
+    if (phoneNumberValidator(phone) === false) {
+      setPhoneError(true);
+    }
+    if (photoImage == "") {
+      setPhotoImageError(true);
     }
   }
+
+  function handleNextPageEducation() {
+    if (position && employer && startDate && endDate && aboutJob) {
+      setGoToEducationPage(true);
+      setGoToExperiencePage(false);
+    }
+    if (position.length < 2 || position == "") {
+      setIvalidPosition(true);
+    }
+
+    if (employer.length < 2 || employer == "") {
+      setInvalidEmployer(true);
+    }
+    if (startDate == "") {
+      setExperienceStartdate(true);
+    }
+    if (endDate == "") {
+      setExperienceEnddate(true);
+    }
+    if (aboutJob == "") {
+      setTextAreaRequired(true);
+    }
+  }
+
+  useEffect(() => {
+    const requestDegree = async () => {
+      const response = await axios.get(
+        "https://resume.redberryinternship.ge/api/degrees"
+      );
+      const data = response.data;
+      setdegree(data);
+    };
+    requestDegree();
+  }, []);
 
   useEffect(() => {
     if (nameValidator(name)) {
@@ -56,7 +141,7 @@ export default function PersonalInfo() {
       setLastNameError(false);
     }
 
-    if (regExEmail(email)) {
+    if (emailValidator(email)) {
       setEmailOk(true);
       setEmailError(false);
     }
@@ -65,9 +150,17 @@ export default function PersonalInfo() {
       setPhoneOk(true);
       setPhoneError(false);
     }
+    if (position.length > 2) {
+      setIvalidPosition(false);
+    }
+    if (employer.length > 2) {
+      setInvalidEmployer(false);
+    }
+    if (universityName.length > 2) {
+      setUniversityNameError(false);
+    }
   }, [
     name,
-    setName,
     lastName,
     email,
     phone,
@@ -77,6 +170,9 @@ export default function PersonalInfo() {
     employer,
     startDate,
     endDate,
+    universityName,
+    invalidPosition,
+    invalidEmployer,
   ]);
 
   const nameValidator = (name: string) => {
@@ -89,6 +185,7 @@ export default function PersonalInfo() {
     } else if (name == "") {
       setFirstNameError(false);
       setFirsNameOk(false);
+      return false;
     } else {
       setFirstNameError(true);
       setFirsNameOk(false);
@@ -106,6 +203,7 @@ export default function PersonalInfo() {
     } else if (name == "") {
       setLastNameError(false);
       setLastNameOk(false);
+      return false;
     } else {
       setLastNameError(true);
       setLastNameOk(false);
@@ -113,7 +211,7 @@ export default function PersonalInfo() {
     }
   };
 
-  const regExEmail = (email: string) => {
+  const emailValidator = (email: string) => {
     const regExEmailValidator = new RegExp(
       /((^[a-zA-Z0-9]{1,})?(\.|\_|\-|\+)?([a-zA-Z0-9]){1,}?(\.|\_|\-|\+)?([a-zA-Z0-9]){1,}(\@redberry.ge))/
     );
@@ -125,6 +223,7 @@ export default function PersonalInfo() {
     } else if (email == "") {
       setEmailError(false);
       setEmailOk(false);
+      return false;
     } else {
       setEmailError(true);
       setEmailOk(false);
@@ -134,7 +233,7 @@ export default function PersonalInfo() {
 
   const phoneNumberValidator = (phone: string) => {
     const phoneNumberValidation = new RegExp(
-      /(?:(\+995)[ -]?)(?:([0-9]{3})[ -]?)(?:([0-9]{2,})[- ]?)(?:([0-9]{2,})[ -]?)([0-9]{2,})/
+      /(?:(\+995)[ -]?)(?:([0-9]{3})[ -]?)(?:([0-9]{1,})[- ]?)(?:([0-9]{2,})[ -]?)([0-9]{2,})/
     );
 
     const phoneResult = phoneNumberValidation.test(phone);
@@ -146,6 +245,7 @@ export default function PersonalInfo() {
     } else if (phone == "") {
       setPhoneError(false);
       setPhoneOk(false);
+      return false;
     } else {
       setPhoneError(true);
       setPhoneOk(false);
@@ -159,6 +259,8 @@ export default function PersonalInfo() {
 
   const handleImgSave = (event: any) => {
     setPhotoImage(URL.createObjectURL(event.target.files[0]));
+    setPhotoImageError(false);
+    return true;
   };
 
   //experience Page setup start
@@ -190,9 +292,7 @@ export default function PersonalInfo() {
       <MainInput>
         {/* ეს არის პირველი ფეიჯის დასაწყისი */}
 
-        {gotToExperiencePage ? (
-          ""
-        ) : (
+        {goToPersonalPage && (
           <InputInfo>
             <PageHeader header="პირადი ინფო" pageNumber="1/3" link={"/"} />
             <PersonNamesContainer>
@@ -230,15 +330,19 @@ export default function PersonalInfo() {
                 <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
               </PersonInputContainer>
             </PersonNamesContainer>
+
             <PictureFieldContainer>
               <InputName>პირადი ფოტოს ატვირთვა</InputName>
+
               <SelectPhotoInput
                 type="file"
                 ref={hiddenFileInput}
                 onChange={handleImgSave}
               />
               <SelectPhoto onClick={handleClick}>ატვირთვა</SelectPhoto>
+              {photoImageError && <ErrorImage src={error} />}
             </PictureFieldContainer>
+
             <PersonInputContainer>
               <InputName>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</InputName>
               <AboutInput
@@ -282,13 +386,15 @@ export default function PersonalInfo() {
             </PersonInputContainer>
             {/* აქედან სხვა გვერდძე არ გადავა უბრალოდ სხვა რამეს გამოაჩენს */}
 
-            <NextPageButton onClick={handleNextPage}>ᲨᲔᲛᲓᲔᲒᲘ</NextPageButton>
+            <NextPageButton onClick={handleNextPageExperience}>
+              ᲨᲔᲛᲓᲔᲒᲘ
+            </NextPageButton>
           </InputInfo>
         )}
 
         {/* ეს არის პირველი ფეიჯის დასასრული */}
-
-        {gotToExperiencePage && (
+        {/* აქ იწყება გამოცდილების ფეიჯი */}
+        {goToExperiencePage && (
           <PersonalContainerExperience>
             <InputInfo>
               <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
@@ -314,18 +420,26 @@ export default function PersonalInfo() {
                     }}
                     onChangeStartDate={(e: any) => {
                       setStartDate(e.target.value);
+                      setExperienceStartdate(false);
                     }}
                     onChangeEndDate={(e: any) => {
                       setEndDate(e.target.value);
+                      setExperienceEnddate(false);
                     }}
                     aboutJob={(e: any) => {
                       setAboutJob(e.target.value);
+                      setTextAreaRequired(false);
                     }}
                     positionValue={position}
                     employerValue={employer}
                     startDateValue={startDate}
                     endDateValue={endDate}
                     textAreaValue={aboutJob}
+                    invalidPosition={invalidPosition}
+                    invalidEmployer={invalidEmployer}
+                    experienceStartDate={experienceStartdate}
+                    experienceEndDate={experienceEnddate}
+                    textAreaRequired={textAreaRequired}
                   />
                   {/* თუ ერეის სიგრძე არ აღემატება სამს(რენდომად), გაქრეს ახალი გამოცდილების დამატების ღილაკი/ფუქცია */}
                   {experienceList.length - 1 === index &&
@@ -339,9 +453,97 @@ export default function PersonalInfo() {
             </InputInfo>
             <BackOrNextContainer>
               <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-              <ForwardButton to={"education"}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
+              <ForwardButton onClick={handleNextPageEducation}>
+                ᲨᲔᲛᲓᲔᲒᲘ
+              </ForwardButton>
             </BackOrNextContainer>
           </PersonalContainerExperience>
+        )}
+        {/* აქ მთავრდება გამოცდილების ფეიჯი */}
+
+        {/* აქ იწყება განათლების ფეიჯი */}
+
+        {goToEducationPage && (
+          <InputInfo>
+            <InputHeader header="ᲒᲐᲜᲐᲗᲚᲔᲑᲐ" pageNumber="3/3" />
+
+            <NamesInput
+              main={"სასწავლებელი"}
+              placeholder={"სასწავლებელი"}
+              hint={"მინიმუმ 2 სიმბოლო"}
+              type={"text"}
+              value={universityName}
+              onChange={(e: any) => {
+                setUniversityName(e.target.value);
+              }}
+              invalid={universityNameError}
+            />
+
+            {/* აქ იწყება ედუქეიშენ კომპონენტი  */}
+            <EducationContainer>
+              <DegreeDiv>
+                <DegreeName>ხარისხი</DegreeName>
+                <DegreeOptionsContainer
+                  onClick={() => {
+                    setShowDegree(!showDegree);
+                  }}
+                >
+                  <ChooseDegree>
+                    {selectedDegree ? selectedDegree : "აირჩიეთ ხარისხი"}
+                  </ChooseDegree>
+                  <Button>
+                    <DownArrow src={arrowdown} alt="" />
+                  </Button>
+                  {selectedDegreeError && <ErrorImage src={error} />}
+                </DegreeOptionsContainer>
+                {showDegree && (
+                  <DegreeOptions>
+                    <List>
+                      {degree &&
+                        degree.map((degrees) => (
+                          <ListItem
+                            key={degrees.id}
+                            onClick={() => {
+                              setselectedDegree(degrees.title);
+                              setShowDegree(!showDegree);
+                              setselectedDegreeError(false);
+                            }}
+                          >
+                            {degrees.title}
+                          </ListItem>
+                        ))}
+                    </List>
+                  </DegreeOptions>
+                )}
+              </DegreeDiv>
+              <NamesInput
+                main={"დამთავრების რიცხვი"}
+                type={"date"}
+                onChange={(e: any) => {
+                  setUniversityEndDate(e.target.value);
+                }}
+                value={universityEndDate}
+              />
+            </EducationContainer>
+
+            {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
+            <InputTextArea
+              main={"აღწერა"}
+              placeholder={"განათლების აღწერა"}
+              onChange={(e: any) => {
+                setUniversityDescription(e.target.value);
+              }}
+              textAreaValue={universityDescription}
+            />
+            <HorisontalLine></HorisontalLine>
+            <AddMoreExperiencebutton>
+              სხვა სასწავლებლის დამატება
+            </AddMoreExperiencebutton>
+            <BackOrNextContainer>
+              <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
+              <ForwardButton onClick={sendFinalResult}>ᲓᲐᲡᲠᲣᲚᲔᲑᲐ</ForwardButton>
+            </BackOrNextContainer>
+          </InputInfo>
         )}
       </MainInput>
 
@@ -388,9 +590,9 @@ export default function PersonalInfo() {
                 <AboutMe />
               )}
             </MainWithImg>
-            {photoImage && <CvImage src={photoImage} alt="" />}
+            {photoImage ? <CvImage src={photoImage} alt="" /> : <HiddenImg />}
           </CvFirstPart>
-          {position && (
+          {(position || employer || startDate || endDate || aboutJob) && (
             <CvSecondPart>
               <ExperienceHeader>ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ</ExperienceHeader>
               <JobCompanyDatesContainer>
@@ -407,31 +609,141 @@ export default function PersonalInfo() {
               <AboutExperience>{aboutJob}</AboutExperience>
             </CvSecondPart>
           )}
-          <CvThirdPart>
-            <EducationHeader>ᲒᲐᲜᲐᲗᲚᲔᲑᲐ</EducationHeader>
-            <EducationDegreeDate>
-              <JobTitleAndCompanyName>
-                <JobTitleOrCompanyName>
-                  წმ. ანდრიას საპატრიარქოს სასწავლებელი,
-                </JobTitleOrCompanyName>
-                <JobTitleOrCompanyName>სტუდენტი</JobTitleOrCompanyName>
-              </JobTitleAndCompanyName>
-              <StartEndDate>
-                <p>2020-09-23</p>
-              </StartEndDate>
-            </EducationDegreeDate>
-            <AboutExperience>
-              ვსწავლობდი გულმოდგინეთ. მყავდა ფრიადები. რაც შემეძლო — ვქენი.
-              კომპიუტერები მიყვარდა. ვიჯექი ჩემთვის, ვაკაკუნებდი ამ კლავიშებზე.
-              მეუნებოდნენ — დაჯექი, წაიკითხე რამე, რას აკაკუნებ, დრო მოვა და
-              ჩაგიკაკუნებსო. აჰა, მოვიდა დრო და ვერა ვარ დეველოპერი?
-            </AboutExperience>
-          </CvThirdPart>
+          {(universityName ||
+            selectedDegree ||
+            universityEndDate ||
+            universityDescription) && (
+            <CvThirdPart>
+              <EducationHeader>ᲒᲐᲜᲐᲗᲚᲔᲑᲐ</EducationHeader>
+              <EducationDegreeDate>
+                <JobTitleAndCompanyName>
+                  <JobTitleOrCompanyName>
+                    {universityName},
+                  </JobTitleOrCompanyName>
+                  <JobTitleOrCompanyName>
+                    {selectedDegree}
+                  </JobTitleOrCompanyName>
+                </JobTitleAndCompanyName>
+                <StartEndDate>
+                  <p>{universityEndDate}</p>
+                </StartEndDate>
+              </EducationDegreeDate>
+              <AboutExperience>{universityDescription}</AboutExperience>
+            </CvThirdPart>
+          )}
         </MainContentContainer>
       </MainOutput>
     </PersonalContainer>
   );
 }
+
+//education degree container dasawyisi
+
+const ListItem = styled.li`
+  list-style-type: none;
+  padding-left: 20px;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
+const List = styled.ul`
+  padding: 0px;
+  width: 100%;
+`;
+
+const DownArrow = styled.img`
+  width: 20px;
+`;
+
+const Button = styled.button`
+  border: none;
+  background-color: #ffffff;
+`;
+
+const DegreeOptions = styled.div`
+  width: 370px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  position: absolute;
+  top: 69px;
+  padding: 0px 0px 0px 0px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px 0px #e4e4e4;
+  background: #ffffff;
+  z-index: 2;
+`;
+
+const ChooseDegree = styled.p`
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+`;
+
+const DegreeOptionsContainer = styled.div`
+  border: 1px solid #bcbcbc;
+  background: #ffffff;
+  height: 40px;
+  width: 370px;
+  border-radius: 4px;
+  font-family: "HelveticaNeue";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  padding: 10px 16px 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+`;
+
+const EducationContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 56px;
+`;
+
+const DegreeDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+  position: relative;
+`;
+
+const DegreeName = styled.h4`
+  font-family: "HelveticaNeue";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21px;
+  letter-spacing: 0em;
+  padding: 0;
+  margin: 0px;
+`;
+
+//education degree coontainer dasasruli
+
+//education Page start
+
+const PersonalEducationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const HorisontalLine = styled.div`
+  border-bottom: 1px solid #c1c1c1;
+`;
+//education page end
 
 // experiencepage styles start
 
@@ -474,7 +786,7 @@ const BackButton = styled.button`
   }
 `;
 
-const ForwardButton = styled(Link)`
+const ForwardButton = styled.button`
   height: 48px;
   width: 151px;
   background: #6b40e3;
@@ -564,6 +876,10 @@ const OkImage = styled.img`
 const ErrorImage = styled.img`
   position: absolute;
   right: -30px;
+`;
+
+const ErrorIconForImg = styled.img`
+  position: absolute;
 `;
 
 //personFullname
@@ -673,9 +989,8 @@ const MainInput = styled.div`
   justify-content: center;
   align-items: center;
   padding: 30px 90px 30px 90px;
-  height: 100vh;
+  height: 100%;
   width: 100%;
-  overflow: auto;
 `;
 
 const InputInfo = styled.div`
@@ -706,6 +1021,7 @@ const PictureFieldContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  position: relative;
 `;
 
 const SelectPhotoInput = styled.input`
@@ -805,7 +1121,7 @@ const AboutExperience = styled.p`
   font-weight: 400;
   font-size: 18px;
   line-height: 22px;
-  text-transform: capitalize;
+  text-transform: none;
   color: #000000;
 `;
 
@@ -873,6 +1189,14 @@ const CvImage = styled.img`
   border: none;
 `;
 
+const HiddenImg = styled.div`
+  height: 240px;
+  width: 240px;
+  border-radius: 50%;
+  border: none;
+  visibility: hidden;
+`;
+
 const AboutMeParagraph = styled.p`
   font-family: "HelveticaNeue";
   font-size: 18px;
@@ -927,7 +1251,8 @@ const FullName = styled.div`
   font-size: 22px;
   font-weight: 700;
   line-height: 42px;
-  letter-spacing: 0em;
+  width: 500px;
+  word-wrap: break-word;
 `;
 
 const CvFirstPart = styled.div`
