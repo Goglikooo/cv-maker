@@ -33,9 +33,9 @@ export default function PersonalInfo() {
   const [emailError, setEmailError] = useState(false);
   const [phoneOk, setPhoneOk] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [goToPersonalPage, setGoToPersonalPage] = useState(false);
+  const [goToPersonalPage, setGoToPersonalPage] = useState(true);
   const [goToExperiencePage, setGoToExperiencePage] = useState(false);
-  const [goToEducationPage, setGoToEducationPage] = useState(true);
+  const [goToEducationPage, setGoToEducationPage] = useState(false);
 
   const [position, setPosition] = useState("");
   const [invalidPosition, setIvalidPosition] = useState(false);
@@ -56,7 +56,10 @@ export default function PersonalInfo() {
   const [universityName, setUniversityName] = useState("");
   const [universityNameError, setUniversityNameError] = useState(false);
   const [universityEndDate, setUniversityEndDate] = useState("");
+  const [universityEndDateError, setUniversityEndDateError] = useState(false);
   const [universityDescription, setUniversityDescription] = useState("");
+  const [unviersityDescriptionError, setUniversityDescriptionError] =
+    useState(false);
 
   interface Degrees {
     id: number;
@@ -71,6 +74,12 @@ export default function PersonalInfo() {
     }
     if (selectedDegree == "") {
       setselectedDegreeError(true);
+    }
+    if (universityEndDate == "") {
+      setUniversityEndDateError(true);
+    }
+    if (universityDescription == "") {
+      setUniversityDescriptionError(true);
     }
   };
 
@@ -521,8 +530,10 @@ export default function PersonalInfo() {
                 type={"date"}
                 onChange={(e: any) => {
                   setUniversityEndDate(e.target.value);
+                  setUniversityEndDateError(false);
                 }}
                 value={universityEndDate}
+                invalid={universityEndDateError}
               />
             </EducationContainer>
 
@@ -532,8 +543,9 @@ export default function PersonalInfo() {
               placeholder={"განათლების აღწერა"}
               onChange={(e: any) => {
                 setUniversityDescription(e.target.value);
+                setUniversityDescriptionError(false);
               }}
-              textAreaValue={universityDescription}
+              textAreaRequired={unviersityDescriptionError}
             />
             <HorisontalLine></HorisontalLine>
             <AddMoreExperiencebutton>

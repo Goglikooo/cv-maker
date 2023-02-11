@@ -5,7 +5,7 @@ interface Props {
   main: string;
   placeholder: string;
   onChange: any;
-  textAreaValue: string;
+  textAreaValue?: string;
   textAreaRequired?: boolean;
 }
 
