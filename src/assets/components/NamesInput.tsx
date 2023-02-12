@@ -12,10 +12,11 @@ interface Props {
   onChange: any;
   value: any;
   invalid?: boolean;
+  id?: string;
 }
 
 export default function NamesInput(props: Props) {
-  const { main, placeholder, hint, type, onChange, value, invalid } = props;
+  const { main, placeholder, hint, type, onChange, value, invalid, id } = props;
 
   return (
     <PersonInputContainer>
@@ -25,6 +26,7 @@ export default function NamesInput(props: Props) {
         placeholder={placeholder}
         onChange={onChange}
         value={value}
+        id={id}
         required
       />
 

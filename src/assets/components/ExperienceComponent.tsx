@@ -94,7 +94,7 @@ export default function ExperienceComponent(props: Props) {
   );
 }
 
-const StartDate = styled.div`
+const StartDate = styled.label`
   width: 100%;
   position: relative;
 `;

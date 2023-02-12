@@ -12,7 +12,7 @@ import ok from "../images/ok.png";
 import error from "../images/error.png";
 import ExperienceComponent from "../components/ExperienceComponent";
 import PageHeader from "../components/PageHeader";
-import EducationDegree from "../components/EducationDegree";
+
 import axios from "axios";
 import arrowdown from "../images/down-arrow.png";
 
@@ -39,8 +39,8 @@ export default function PersonalInfo() {
   const [phoneError, setPhoneError] = useState(false);
 
   const [goToPersonalPage, setGoToPersonalPage] = useState(false);
-  const [goToExperiencePage, setGoToExperiencePage] = useState(true);
-  const [goToEducationPage, setGoToEducationPage] = useState(false);
+  const [goToExperiencePage, setGoToExperiencePage] = useState(false);
+  const [goToEducationPage, setGoToEducationPage] = useState(true);
 
   //pirveli experience
   const [position, setPosition] = useState("");
@@ -74,6 +74,8 @@ export default function PersonalInfo() {
     setAddMoreExperienceField(true);
   };
 
+  // pirveli education start
+
   const [showDegree, setShowDegree] = useState(false);
   const [degree, setdegree] = useState<Degrees[] | null>(null);
   const [selectedDegree, setselectedDegree] = useState("");
@@ -85,6 +87,26 @@ export default function PersonalInfo() {
   const [universityDescription, setUniversityDescription] = useState("");
   const [unviersityDescriptionError, setUniversityDescriptionError] =
     useState(false);
+
+  // pirveli education end
+
+  //meore education start
+
+  const [addMoreEducation, setAddMoreEducation] = useState(false);
+
+  const [showDegree2, setShowDegree2] = useState(false);
+  const [degree2, setdegree2] = useState<Degrees[] | null>(null);
+  const [selectedDegree2, setselectedDegree2] = useState("");
+  const [selectedDegreeError2, setselectedDegreeError2] = useState(false);
+  const [universityName2, setUniversityName2] = useState("");
+  const [universityNameError2, setUniversityNameError2] = useState(false);
+  const [universityEndDate2, setUniversityEndDate2] = useState("");
+  const [universityEndDateError2, setUniversityEndDateError2] = useState(false);
+  const [universityDescription2, setUniversityDescription2] = useState("");
+  const [unviersityDescriptionError2, setUniversityDescriptionError2] =
+    useState(false);
+
+  //meore education end
 
   interface Degrees {
     id: number;
@@ -105,6 +127,62 @@ export default function PersonalInfo() {
     }
     if (universityDescription == "") {
       setUniversityDescriptionError(true);
+    }
+    if (
+      universityName2 == "" &&
+      (selectedDegree2.length > 0 ||
+        universityEndDate2.length > 0 ||
+        universityDescription2.length > 0)
+    ) {
+      setUniversityNameError2(true);
+    }
+    if (
+      selectedDegree2 == "" &&
+      (universityName2.length > 0 ||
+        universityEndDate2.length > 0 ||
+        universityDescription2.length > 0)
+    ) {
+      setselectedDegreeError2(true);
+    }
+    if (
+      universityEndDate2 == "" &&
+      (universityName2.length > 0 ||
+        selectedDegree2.length > 0 ||
+        universityDescription2.length > 0)
+    ) {
+      setUniversityEndDateError2(true);
+    }
+    if (
+      universityDescription2 == "" &&
+      (universityName2.length > 0 ||
+        selectedDegree2.length > 0 ||
+        universityEndDate2.length > 0)
+    ) {
+      setUniversityDescriptionError2(true);
+    }
+    if (
+      universityName &&
+      selectedDegree &&
+      universityEndDate &&
+      universityDescription &&
+      universityName2 == "" &&
+      selectedDegree2 == "" &&
+      universityEndDate2 == "" &&
+      universityDescription2 == ""
+    ) {
+      console.log("Final result sent");
+    }
+    if (
+      universityName &&
+      selectedDegree &&
+      universityEndDate &&
+      universityDescription &&
+      universityName2 &&
+      selectedDegree2 &&
+      universityEndDate2 &&
+      universityDescription2
+    ) {
+      console.log("Final result sent2");
     }
   };
 
@@ -159,6 +237,7 @@ export default function PersonalInfo() {
     if (aboutJob == "") {
       setTextAreaRequired(true);
     }
+
     if (
       addMoreExperienceField &&
       (position2.length > 0 ||
@@ -200,6 +279,14 @@ export default function PersonalInfo() {
       setdegree(data);
     };
     requestDegree();
+    const requestDegree2 = async () => {
+      const response2 = await axios.get(
+        "https://resume.redberryinternship.ge/api/degrees"
+      );
+      const data2 = response2.data;
+      setdegree2(data2);
+    };
+    requestDegree2();
   }, []);
 
   useEffect(() => {
@@ -384,7 +471,7 @@ export default function PersonalInfo() {
             <PageHeader header="პირადი ინფო" pageNumber="1/3" link={"/"} />
             <PersonNamesContainer>
               <PersonInputContainer>
-                <InputName>სახელი</InputName>
+                <InputName>სახელი </InputName>
                 <NamesInputContainer>
                   <NameInputField
                     type="text"
@@ -557,15 +644,6 @@ export default function PersonalInfo() {
                     experienceEndDate={experienceEnddate2}
                     textAreaRequired={textAreaRequired2}
                   />
-                  {addMoreExperienceField ? (
-                    ""
-                  ) : (
-                    <AddMoreExperiencebutton
-                      onClick={addMoreExperienceFunction}
-                    >
-                      მეტი გამოცდილების დამატება
-                    </AddMoreExperiencebutton>
-                  )}
                 </ExperienceContainer>
               )}
             </InputInfo>
@@ -583,8 +661,7 @@ export default function PersonalInfo() {
 
         {goToEducationPage && (
           <InputInfo>
-            <InputHeader header="ᲒᲐᲜᲐᲗᲚᲔᲑᲐ" pageNumber="3/3" />
-
+            <PageHeader header="ᲒᲐᲜᲐᲗᲚᲔᲑᲐ" pageNumber="3/3" link={"/"} />
             <NamesInput
               main={"სასწავლებელი"}
               placeholder={"სასწავლებელი"}
@@ -597,7 +674,7 @@ export default function PersonalInfo() {
               invalid={universityNameError}
             />
 
-            {/* აქ იწყება ედუქეიშენ კომპონენტი  */}
+            {/* აქ იწყება ედუქეიშენ კომპონენტი!  */}
             <EducationContainer>
               <DegreeDiv>
                 <DegreeName>ხარისხი</DegreeName>
@@ -645,8 +722,6 @@ export default function PersonalInfo() {
                 invalid={universityEndDateError}
               />
             </EducationContainer>
-
-            {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
             <InputTextArea
               main={"აღწერა"}
               placeholder={"განათლების აღწერა"}
@@ -656,16 +731,103 @@ export default function PersonalInfo() {
               }}
               textAreaRequired={unviersityDescriptionError}
             />
+            {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
             <HorisontalLine></HorisontalLine>
-            <AddMoreExperiencebutton>
-              სხვა სასწავლებლის დამატება
-            </AddMoreExperiencebutton>
+            {addMoreEducation ? (
+              ""
+            ) : (
+              <AddMoreExperiencebutton
+                onClick={() => {
+                  setAddMoreEducation(true);
+                }}
+              >
+                სხვა სასწავლებლის დამატება
+              </AddMoreExperiencebutton>
+            )}
+
+            {addMoreEducation && (
+              <InputInfo>
+                <NamesInput
+                  main={"სასწავლებელი"}
+                  placeholder={"სასწავლებელი"}
+                  hint={"მინიმუმ 2 სიმბოლო"}
+                  type={"text"}
+                  value={universityName2}
+                  onChange={(e: any) => {
+                    setUniversityName2(e.target.value);
+                  }}
+                  invalid={universityNameError2}
+                />
+
+                {/* აქ იწყება ედუქეიშენ კომპონენტი!  */}
+                <EducationContainer>
+                  <DegreeDiv>
+                    <DegreeName>ხარისხი</DegreeName>
+                    <DegreeOptionsContainer
+                      onClick={() => {
+                        setShowDegree2(!showDegree2);
+                      }}
+                    >
+                      <ChooseDegree>
+                        {selectedDegree2 ? selectedDegree2 : "აირჩიეთ ხარისხი"}
+                      </ChooseDegree>
+                      <Button>
+                        <DownArrow src={arrowdown} alt="" />
+                      </Button>
+                      {selectedDegreeError2 && <ErrorImage src={error} />}
+                    </DegreeOptionsContainer>
+                    {showDegree2 && (
+                      <DegreeOptions>
+                        <List>
+                          {degree2 &&
+                            degree2.map((degrees) => (
+                              <ListItem
+                                key={degrees.id}
+                                onClick={() => {
+                                  setselectedDegree2(degrees.title);
+                                  setShowDegree2(!showDegree2);
+                                  setselectedDegreeError2(false);
+                                }}
+                              >
+                                {degrees.title}
+                              </ListItem>
+                            ))}
+                        </List>
+                      </DegreeOptions>
+                    )}
+                  </DegreeDiv>
+                  <NamesInput
+                    main={"დამთავრების რიცხვი"}
+                    type={"date"}
+                    onChange={(e: any) => {
+                      setUniversityEndDate2(e.target.value);
+                      setUniversityEndDateError2(false);
+                    }}
+                    value={universityEndDate2}
+                    invalid={universityEndDateError2}
+                  />
+                </EducationContainer>
+                <InputTextArea
+                  main={"აღწერა"}
+                  placeholder={"განათლების აღწერა"}
+                  onChange={(e: any) => {
+                    setUniversityDescription2(e.target.value);
+                    setUniversityDescriptionError2(false);
+                  }}
+                  textAreaRequired={unviersityDescriptionError2}
+                />
+                {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
+              </InputInfo>
+            )}
+
             <BackOrNextContainer>
               <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
               <ForwardButton onClick={sendFinalResult}>ᲓᲐᲡᲠᲣᲚᲔᲑᲐ</ForwardButton>
             </BackOrNextContainer>
           </InputInfo>
         )}
+
+        {/* meore education komponenti */}
       </MainInput>
 
       <MainOutput>
@@ -767,6 +929,25 @@ export default function PersonalInfo() {
                 </StartEndDate>
               </EducationDegreeDate>
               <AboutExperience>{universityDescription}</AboutExperience>
+            </CvThirdPart>
+          )}
+
+          {addMoreEducation && (
+            <CvThirdPart>
+              <EducationDegreeDate>
+                <JobTitleAndCompanyName>
+                  <JobTitleOrCompanyName>
+                    {universityName2},
+                  </JobTitleOrCompanyName>
+                  <JobTitleOrCompanyName>
+                    {selectedDegree2}
+                  </JobTitleOrCompanyName>
+                </JobTitleAndCompanyName>
+                <StartEndDate>
+                  <p>{universityEndDate2}</p>
+                </StartEndDate>
+              </EducationDegreeDate>
+              <AboutExperience>{universityDescription2}</AboutExperience>
             </CvThirdPart>
           )}
         </MainContentContainer>
@@ -979,6 +1160,7 @@ const PersonalContainerExperience = styled.div`
   height: 100%;
   width: 100%;
   flex-direction: column;
+  padding-bottom: 30px;
 `;
 
 // const InputInfo = styled.div`
@@ -1066,7 +1248,7 @@ const PersonInputContainer = styled.div`
   gap: 8px;
 `;
 
-const InputName = styled.h4`
+const InputName = styled.label`
   font-family: "HelveticaNeue";
   font-size: 16px;
   font-weight: 600;
@@ -1124,15 +1306,17 @@ const GoBack = styled(Link)`
 const PersonalContainer = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
+  /* padding-bottom: 30px; */
+  /* background-color: #f9f9f9; */
 `;
 
 const MainInput = styled.div`
   background-color: #f9f9f9;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   padding: 30px 90px 30px 90px;
   height: 100%;
   width: 100%;
