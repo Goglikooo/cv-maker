@@ -25,22 +25,27 @@ export default function PersonalInfo() {
 
   const [photoImage, setPhotoImage] = useState("");
   const [photoImageError, setPhotoImageError] = useState(false);
+
   const [firstNameError, setFirstNameError] = useState(false);
   const [firsNameOk, setFirsNameOk] = useState(false);
+
   const [lastNameOk, setLastNameOk] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
+
   const [emailOk, setEmailOk] = useState(false);
   const [emailError, setEmailError] = useState(false);
+
   const [phoneOk, setPhoneOk] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [goToPersonalPage, setGoToPersonalPage] = useState(true);
-  const [goToExperiencePage, setGoToExperiencePage] = useState(false);
+
+  const [goToPersonalPage, setGoToPersonalPage] = useState(false);
+  const [goToExperiencePage, setGoToExperiencePage] = useState(true);
   const [goToEducationPage, setGoToEducationPage] = useState(false);
 
+  //pirveli experience
   const [position, setPosition] = useState("");
   const [invalidPosition, setIvalidPosition] = useState(false);
   const [invalidEmployer, setInvalidEmployer] = useState(false);
-
   const [employer, setEmployer] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -48,6 +53,26 @@ export default function PersonalInfo() {
   const [experienceStartdate, setExperienceStartdate] = useState(false);
   const [experienceEnddate, setExperienceEnddate] = useState(false);
   const [textAreaRequired, setTextAreaRequired] = useState(false);
+  //end of pirveli experience
+
+  //meore experience start
+  const [position2, setPosition2] = useState("");
+  const [invalidPosition2, setIvalidPosition2] = useState(false);
+  const [invalidEmployer2, setInvalidEmployer2] = useState(false);
+  const [employer2, setEmployer2] = useState("");
+  const [startDate2, setStartDate2] = useState("");
+  const [endDate2, setEndDate2] = useState("");
+  const [aboutJob2, setAboutJob2] = useState("");
+  const [experienceStartdate2, setExperienceStartdate2] = useState(false);
+  const [experienceEnddate2, setExperienceEnddate2] = useState(false);
+  const [textAreaRequired2, setTextAreaRequired2] = useState(false);
+  //end of meore experience
+
+  const [addMoreExperienceField, setAddMoreExperienceField] = useState(false);
+
+  const addMoreExperienceFunction = () => {
+    setAddMoreExperienceField(true);
+  };
 
   const [showDegree, setShowDegree] = useState(false);
   const [degree, setdegree] = useState<Degrees[] | null>(null);
@@ -106,10 +131,18 @@ export default function PersonalInfo() {
   }
 
   function handleNextPageEducation() {
-    if (position && employer && startDate && endDate && aboutJob) {
+    if (
+      position &&
+      employer &&
+      startDate &&
+      endDate &&
+      aboutJob &&
+      addMoreExperienceField == false
+    ) {
       setGoToEducationPage(true);
       setGoToExperiencePage(false);
     }
+
     if (position.length < 2 || position == "") {
       setIvalidPosition(true);
     }
@@ -125,6 +158,36 @@ export default function PersonalInfo() {
     }
     if (aboutJob == "") {
       setTextAreaRequired(true);
+    }
+    if (
+      addMoreExperienceField &&
+      (position2.length > 0 ||
+        employer2.length > 0 ||
+        (startDate2.length > 0 && startDate2 != "") ||
+        (endDate2.length > 0 && endDate2 != "") ||
+        aboutJob2.length > 0)
+    ) {
+      setIvalidPosition2(true);
+      setInvalidEmployer2(true);
+      setExperienceStartdate2(true);
+      setExperienceEnddate2(true);
+      setTextAreaRequired2(true);
+    }
+    if (
+      position &&
+      employer &&
+      startDate &&
+      endDate &&
+      aboutJob &&
+      addMoreExperienceField &&
+      position2 &&
+      employer2 &&
+      startDate2 &&
+      endDate2 &&
+      aboutJob
+    ) {
+      setGoToEducationPage(true);
+      setGoToExperiencePage(false);
     }
   }
 
@@ -168,6 +231,15 @@ export default function PersonalInfo() {
     if (universityName.length > 2) {
       setUniversityNameError(false);
     }
+    if (position2.length > 2) {
+      setIvalidPosition2(false);
+    }
+    if (employer2.length > 2) {
+      setInvalidEmployer2(false);
+    }
+    if (aboutJob2.length > 2) {
+      setTextAreaRequired2(false);
+    }
   }, [
     name,
     lastName,
@@ -182,6 +254,12 @@ export default function PersonalInfo() {
     universityName,
     invalidPosition,
     invalidEmployer,
+    position2,
+    employer2,
+    startDate2,
+    endDate2,
+    invalidPosition2,
+    invalidEmployer2,
   ]);
 
   const nameValidator = (name: string) => {
@@ -407,58 +485,89 @@ export default function PersonalInfo() {
           <PersonalContainerExperience>
             <InputInfo>
               <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
-              {/* შეამოწმოს ერეის სიგრძე და ამის მიხედვით დააბრუნოს გამოცდილების კომპონენტი */}
-              {experienceList.map((singleExperience, index) => (
-                <ExperienceContainer key={index}>
-                  {/* თუ ერეის სიგრძე არის 1 ზე მეტი, გაჩნდეს წაშლის ღილაკი კომპონენტზე */}
-                  {experienceList.length > 1 && (
-                    <DeleteButton
-                      onClick={() => {
-                        handleRemoveExperience(index);
-                      }}
-                    >
-                      გაუქმება
-                    </DeleteButton>
-                  )}
+
+              <ExperienceContainer>
+                <ExperienceComponent
+                  onChangeName={(e: any) => {
+                    setPosition(e.target.value);
+                  }}
+                  onChangeEmployer={(e: any) => {
+                    setEmployer(e.target.value);
+                  }}
+                  onChangeStartDate={(e: any) => {
+                    setStartDate(e.target.value);
+                    setExperienceStartdate(false);
+                  }}
+                  onChangeEndDate={(e: any) => {
+                    setEndDate(e.target.value);
+                    setExperienceEnddate(false);
+                  }}
+                  aboutJob={(e: any) => {
+                    setAboutJob(e.target.value);
+                    setTextAreaRequired(false);
+                  }}
+                  positionValue={position}
+                  employerValue={employer}
+                  startDateValue={startDate}
+                  endDateValue={endDate}
+                  textAreaValue={aboutJob}
+                  invalidPosition={invalidPosition}
+                  invalidEmployer={invalidEmployer}
+                  experienceStartDate={experienceStartdate}
+                  experienceEndDate={experienceEnddate}
+                  textAreaRequired={textAreaRequired}
+                />
+                {addMoreExperienceField ? (
+                  ""
+                ) : (
+                  <AddMoreExperiencebutton onClick={addMoreExperienceFunction}>
+                    მეტი გამოცდილების დამატება
+                  </AddMoreExperiencebutton>
+                )}
+              </ExperienceContainer>
+              {addMoreExperienceField && (
+                <ExperienceContainer>
                   <ExperienceComponent
                     onChangeName={(e: any) => {
-                      setPosition(e.target.value);
+                      setPosition2(e.target.value);
                     }}
                     onChangeEmployer={(e: any) => {
-                      setEmployer(e.target.value);
+                      setEmployer2(e.target.value);
                     }}
                     onChangeStartDate={(e: any) => {
-                      setStartDate(e.target.value);
-                      setExperienceStartdate(false);
+                      setStartDate2(e.target.value);
+                      setExperienceStartdate2(false);
                     }}
                     onChangeEndDate={(e: any) => {
-                      setEndDate(e.target.value);
-                      setExperienceEnddate(false);
+                      setEndDate2(e.target.value);
+                      setExperienceEnddate2(false);
                     }}
                     aboutJob={(e: any) => {
-                      setAboutJob(e.target.value);
-                      setTextAreaRequired(false);
+                      setAboutJob2(e.target.value);
+                      setTextAreaRequired2(false);
                     }}
-                    positionValue={position}
-                    employerValue={employer}
-                    startDateValue={startDate}
-                    endDateValue={endDate}
-                    textAreaValue={aboutJob}
-                    invalidPosition={invalidPosition}
-                    invalidEmployer={invalidEmployer}
-                    experienceStartDate={experienceStartdate}
-                    experienceEndDate={experienceEnddate}
-                    textAreaRequired={textAreaRequired}
+                    positionValue={position2}
+                    employerValue={employer2}
+                    startDateValue={startDate2}
+                    endDateValue={endDate2}
+                    textAreaValue={aboutJob2}
+                    invalidPosition={invalidPosition2}
+                    invalidEmployer={invalidEmployer2}
+                    experienceStartDate={experienceStartdate2}
+                    experienceEndDate={experienceEnddate2}
+                    textAreaRequired={textAreaRequired2}
                   />
-                  {/* თუ ერეის სიგრძე არ აღემატება სამს(რენდომად), გაქრეს ახალი გამოცდილების დამატების ღილაკი/ფუქცია */}
-                  {experienceList.length - 1 === index &&
-                    experienceList.length < 3 && (
-                      <AddMoreExperiencebutton onClick={handleAddExperience}>
-                        მეტი გამოცდილების დამატება
-                      </AddMoreExperiencebutton>
-                    )}
+                  {addMoreExperienceField ? (
+                    ""
+                  ) : (
+                    <AddMoreExperiencebutton
+                      onClick={addMoreExperienceFunction}
+                    >
+                      მეტი გამოცდილების დამატება
+                    </AddMoreExperiencebutton>
+                  )}
                 </ExperienceContainer>
-              ))}
+              )}
             </InputInfo>
             <BackOrNextContainer>
               <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
@@ -621,6 +730,23 @@ export default function PersonalInfo() {
               <AboutExperience>{aboutJob}</AboutExperience>
             </CvSecondPart>
           )}
+          {addMoreExperienceField && (
+            <CvSecondPart>
+              <HorisontalLine></HorisontalLine>
+              <JobCompanyDatesContainer>
+                <JobTitleAndCompanyName>
+                  <JobTitleOrCompanyName>{position2},</JobTitleOrCompanyName>
+                  <JobTitleOrCompanyName>{employer2}</JobTitleOrCompanyName>
+                </JobTitleAndCompanyName>
+                <StartEndDate>
+                  <p>{startDate2}</p>
+                  <span> - </span>
+                  <p>{endDate2}</p>
+                </StartEndDate>
+              </JobCompanyDatesContainer>
+              <AboutExperience>{aboutJob2}</AboutExperience>
+            </CvSecondPart>
+          )}
           {(universityName ||
             selectedDegree ||
             universityEndDate ||
@@ -648,6 +774,14 @@ export default function PersonalInfo() {
     </PersonalContainer>
   );
 }
+
+//horisontal line only start
+
+const HorisontalLine = styled.div`
+  border-bottom: 1px solid #c1c1c1;
+`;
+
+// horisontal line only end
 
 //education degree container dasawyisi
 
@@ -752,15 +886,14 @@ const PersonalEducationContainer = styled.div`
   height: 100vh;
 `;
 
-const HorisontalLine = styled.div`
-  border-bottom: 1px solid #c1c1c1;
-`;
 //education page end
 
 // experiencepage styles start
 
 const ExperienceContainer = styled.div`
   position: relative;
+  width: 100%;
+  border: none;
 `;
 
 const DeleteButton = styled.button`
@@ -1003,6 +1136,7 @@ const MainInput = styled.div`
   padding: 30px 90px 30px 90px;
   height: 100%;
   width: 100%;
+  overflow: auto;
 `;
 
 const InputInfo = styled.div`
@@ -1012,8 +1146,9 @@ const InputInfo = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   gap: 45px;
-
+  background-color: #f9f9f9;
   margin-bottom: 80px;
+  position: relative;
 `;
 
 const MainOutput = styled.div`
