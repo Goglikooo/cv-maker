@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import ok from "../images/ok.png";
 import error from "../images/error.png";
 
 interface Props {
