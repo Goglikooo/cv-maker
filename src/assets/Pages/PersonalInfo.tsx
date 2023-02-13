@@ -148,7 +148,7 @@ export default function PersonalInfo() {
           educations: [
             {
               institute: universityName,
-              degree_id: 1,
+              degree_id: degreeIndex,
               due_date: universityEndDate,
               description: universityDescription,
             },

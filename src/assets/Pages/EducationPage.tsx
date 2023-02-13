@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import InputTextArea from "../components/InputTextArea";
 import NamesInput from "../components/NamesInput";
@@ -7,7 +7,7 @@ import arrowdown from "../images/down-arrow.png";
 import error from "../images/error.png";
 
 interface Degrees {
-  id: number;
+  id: number | any;
   title: string;
 }
 
@@ -100,6 +100,8 @@ export default function EducationPage(props: Props) {
     setDegreeIndex,
   } = props;
 
+  useEffect(() => {}, [degree]);
+
   return (
     <InputInfo>
       <PageHeader header="ᲒᲐᲜᲐᲗᲚᲔᲑᲐ" pageNumber="3/3" link={"/"} />
@@ -143,11 +145,8 @@ export default function EducationPage(props: Props) {
                       onClick={() => {
                         setselectedDegree(degrees.title);
                         setShowDegree(!showDegree);
-
-                        setDegreeIndex(
-                          degree.findIndex((obj) => obj.title === degrees.title)
-                        );
-
+                        let result = degrees.id;
+                        setDegreeIndex(result);
                         setselectedDegreeError(false);
                       }}
                     >
