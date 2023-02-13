@@ -144,13 +144,6 @@ export default function PersonalInfo() {
               due_date: endDate,
               description: aboutJob,
             },
-            {
-              position: position2,
-              employer: employer2,
-              start_date: startDate2,
-              due_date: endDate2,
-              description: aboutJob2,
-            },
           ],
           educations: [
             {
@@ -158,12 +151,6 @@ export default function PersonalInfo() {
               degree_id: 1,
               due_date: universityEndDate,
               description: universityDescription,
-            },
-            {
-              institute: universityName2,
-              degree_id: 2,
-              due_date: universityEndDate2,
-              description: universityDescription2,
             },
           ],
           image: photoImageForAxios,
@@ -358,28 +345,6 @@ export default function PersonalInfo() {
     universityDescription2,
   ]);
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
   useEffect(() => {
     if (nameValidator(name)) {
       setFirsNameOk(true);
@@ -548,7 +513,7 @@ export default function PersonalInfo() {
       universityDescription2 == ""
     ) {
       console.log("Final result sent");
-      //aq unda vqna axios post
+      postRequest();
     }
     if (
       universityName &&
@@ -902,6 +867,7 @@ export default function PersonalInfo() {
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
                   width: "50%",
+                  height: "100%",
                   margin: "20px auto",
                   border: "0.8px solid #b6b2b2",
                   padding: "60px 20px 60px 40px",
