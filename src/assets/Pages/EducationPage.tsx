@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import InputTextArea from "../components/InputTextArea";
 import NamesInput from "../components/NamesInput";
@@ -52,6 +52,7 @@ interface Props {
   universityDescription2: string;
   goBack2: any;
   sendFinalResult: any;
+  setDegreeIndex?: any;
 }
 
 export default function EducationPage(props: Props) {
@@ -96,6 +97,7 @@ export default function EducationPage(props: Props) {
     universityDescription2,
     goBack2,
     sendFinalResult,
+    setDegreeIndex,
   } = props;
 
   return (
@@ -141,6 +143,11 @@ export default function EducationPage(props: Props) {
                       onClick={() => {
                         setselectedDegree(degrees.title);
                         setShowDegree(!showDegree);
+
+                        setDegreeIndex(
+                          degree.findIndex((obj) => obj.title === degrees.title)
+                        );
+
                         setselectedDegreeError(false);
                       }}
                     >

@@ -1,18 +1,10 @@
 import styled from "styled-components";
-import InputHeader from "../components/InputHeader";
 import { Link, useNavigate } from "react-router-dom";
-import NamesInput from "../components/NamesInput";
-import InputTextArea from "../components/InputTextArea";
 import { useEffect, useState, useRef } from "react";
 import atSymbol from "../images/at-Symbol.png";
 import phoneIcon from "../images/phone-icon.png";
 import React from "react";
-import ok from "../images/ok.png";
-import error from "../images/error.png";
-import ExperienceComponent from "../components/ExperienceComponent";
-import PageHeader from "../components/PageHeader";
 import axios from "axios";
-import arrowdown from "../images/down-arrow.png";
 import PersonalInformation from "../Pages/PersonalInformation";
 import ExperiencePage from "../Pages/ExperiencePage";
 import EducationPage from "../Pages/EducationPage";
@@ -31,6 +23,7 @@ export default function PersonalInfo() {
 
   const [photoImage, setPhotoImage] = useState("");
   const [photoImageError, setPhotoImageError] = useState(false);
+  const [photoImageForAxios, setPhotoImageForAxios] = useState("");
 
   const [firstNameError, setFirstNameError] = useState(false);
   const [firsNameOk, setFirsNameOk] = useState(false);
@@ -125,7 +118,70 @@ export default function PersonalInfo() {
   const [unviersityDescriptionError2, setUniversityDescriptionError2] =
     useState(false);
 
+  const [degreeIndex, setDegreeIndex] = useState(null);
   //meore education end
+
+  const [sentResult, setSentResult] = useState(false);
+  const [removeFinalMessage, setRemoveFinalMessage] = useState(true);
+
+  const postRequest = () => {
+    const formData = new FormData();
+    formData.append("image", photoImage);
+    const newImage = URL.revokeObjectURL(photoImage);
+    axios
+      .post(
+        "https://resume.redberryinternship.ge/api/cvs",
+        {
+          name: name,
+          surname: lastName,
+          email: email,
+          phone_number: phone,
+          experiences: [
+            {
+              position: position,
+              employer: employer,
+              start_date: startDate,
+              due_date: endDate,
+              description: aboutJob,
+            },
+            {
+              position: position2,
+              employer: employer2,
+              start_date: startDate2,
+              due_date: endDate2,
+              description: aboutJob2,
+            },
+          ],
+          educations: [
+            {
+              institute: universityName,
+              degree_id: 1,
+              due_date: universityEndDate,
+              description: universityDescription,
+            },
+            {
+              institute: universityName2,
+              degree_id: 2,
+              due_date: universityEndDate2,
+              description: universityDescription2,
+            },
+          ],
+          image: photoImageForAxios,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((resp) => {
+        console.log(resp.data);
+        // aq unda chavwero boolo cv.
+        setGoToEducationPage(false);
+        setSentResult(true);
+      })
+      .catch((err) => console.log(err));
+  };
 
   // save information in sessionStorage Start
 
@@ -492,6 +548,7 @@ export default function PersonalInfo() {
       universityDescription2 == ""
     ) {
       console.log("Final result sent");
+      //aq unda vqna axios post
     }
     if (
       universityName &&
@@ -504,6 +561,8 @@ export default function PersonalInfo() {
       universityDescription2
     ) {
       console.log("Final result sent2");
+
+      postRequest();
     }
   };
 
@@ -693,6 +752,7 @@ export default function PersonalInfo() {
   };
 
   const handleImgSave = (event: any) => {
+    setPhotoImageForAxios(event.target.files[0]);
     const imgUrl = URL.createObjectURL(event.target.files[0]);
     setPhotoImage(imgUrl);
     setPhotoImageError(false);
@@ -705,7 +765,7 @@ export default function PersonalInfo() {
 
   return (
     <PersonalContainer>
-      <MainInput>
+      <MainInput style={{ display: `${sentResult ? "none" : "flex"}` }}>
         {/* ეს არის პირველი ფეიჯის დასაწყისი */}
 
         {goToPersonalPage && (
@@ -829,13 +889,50 @@ export default function PersonalInfo() {
             universityDescription2={universityDescription2}
             goBack2={goBack2}
             sendFinalResult={sendFinalResult}
+            setDegreeIndex={setDegreeIndex}
           />
         )}
       </MainInput>
 
       <MainOutput>
-        <MainContentContainer>
+        <MainContentContainer
+          style={
+            sentResult
+              ? {
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  width: "50%",
+                  margin: "20px auto",
+                  border: "0.8px solid #b6b2b2",
+                  padding: "60px 20px 60px 40px",
+                }
+              : {}
+          }
+        >
           <CvFirstPart>
+            {sentResult && removeFinalMessage && (
+              <SuccessfullySentBox>
+                <RemoveFinalMessage
+                  onClick={() => {
+                    setRemoveFinalMessage(false);
+                  }}
+                >
+                  X
+                </RemoveFinalMessage>
+                <FinalMessage>რეზიუმე წარმატებით გაიგზავნა 🎉</FinalMessage>
+              </SuccessfullySentBox>
+            )}
+            {sentResult && (
+              <GoBack
+                to={"/"}
+                onClick={() => {
+                  sessionStorage.clear();
+                }}
+              >
+                &#60;
+              </GoBack>
+            )}
+
             <MainWithImg>
               <FullName>
                 {name ? (
@@ -960,260 +1057,45 @@ export default function PersonalInfo() {
   );
 }
 
-//horisontal line only start
+const RemoveFinalMessage = styled.div`
+  font-size: 20px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-family: "HelveticaNeue";
+
+  &:hover {
+    color: #d0200d;
+    font-size: 25px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+`;
+
+const FinalMessage = styled.p`
+  font-size: 25px;
+`;
+
+const SuccessfullySentBox = styled.div`
+  height: 167px;
+  width: 427px;
+  border-radius: 8px;
+  padding: 28px 30px 30px 30px;
+  border: 1px solid #e4e4e4;
+  box-shadow: 0px 4px 28px 0px #00000040;
+  position: absolute;
+
+  left: 900px;
+  background-color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const HorisontalLine = styled.div`
   border-bottom: 1px solid #c1c1c1;
 `;
-
-// horisontal line only end
-
-//education degree container dasawyisi
-
-const ListItem = styled.li`
-  list-style-type: none;
-  padding-left: 20px;
-  &:hover {
-    background-color: #f9f9f9;
-  }
-`;
-
-const List = styled.ul`
-  padding: 0px;
-  width: 100%;
-`;
-
-const DownArrow = styled.img`
-  width: 20px;
-`;
-
-const Button = styled.button`
-  border: none;
-  background-color: #ffffff;
-`;
-
-const DegreeOptions = styled.div`
-  width: 370px;
-  background-color: #ffffff;
-  box-sizing: border-box;
-  position: absolute;
-  top: 69px;
-  padding: 0px 0px 0px 0px;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px 0px #e4e4e4;
-  background: #ffffff;
-  z-index: 2;
-`;
-
-const ChooseDegree = styled.p`
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-`;
-
-const DegreeOptionsContainer = styled.div`
-  border: 1px solid #bcbcbc;
-  background: #ffffff;
-  height: 40px;
-  width: 370px;
-  border-radius: 4px;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-  padding: 10px 16px 14px 16px;
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-`;
-
-const EducationContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 56px;
-`;
-
-const DegreeDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  width: 100%;
-  gap: 8px;
-  position: relative;
-`;
-
-const DegreeName = styled.h4`
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 21px;
-  letter-spacing: 0em;
-  padding: 0;
-  margin: 0px;
-`;
-
-//education degree coontainer dasasruli
-
-//education Page start
-
-const PersonalEducationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-//education page end
-
-// experiencepage styles start
-
-const ExperienceContainer = styled.div`
-  position: relative;
-  width: 100%;
-  border: none;
-`;
-
-const DeleteButton = styled.button`
-  height: 25px;
-  width: 100px;
-  align-self: flex-end;
-  margin: 0;
-  position: absolute;
-  right: 0;
-  border: none;
-  border-radius: 4px;
-  background-color: #d0351d;
-  color: white;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  &:hover {
-    background-color: #ff3010;
-    cursor: pointer;
-  }
-`;
-
-const BackButton = styled.button`
-  height: 48px;
-  width: 113px;
-  background: #6b40e3;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: #ffffff;
-  border: none;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const ForwardButton = styled.button`
-  height: 48px;
-  width: 151px;
-  background: #6b40e3;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: #ffffff;
-  border: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const BackOrNextContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-`;
-
-const AddMoreExperiencebutton = styled.button`
-  height: 48px;
-  width: 289px;
-  border-radius: 4px;
-  border: none;
-  background: #62a1eb;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &:hover {
-    cursor: pointer;
-    background: #5195e3;
-  }
-`;
-
-const PersonalContainerExperience = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  flex-direction: column;
-  padding-bottom: 30px;
-`;
-
-// const InputInfo = styled.div`
-//   width: 100%;
-//   height: auto;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: flex-start;
-//   gap: 45px;
-//   margin-bottom: 80px;
-// `;
-
-// esperiencepahe styles end
-
-//names imput container
-
-const NamesInputContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 40px;
-  width: 100%;
-  border-radius: 4px;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-  /* padding: 13px 16px 14px 16px; */
-  background-color: #ffffff;
-  position: relative;
-`;
-
-const OkImage = styled.img`
-  position: absolute;
-  right: 10px;
-`;
-
-const ErrorImage = styled.img`
-  position: absolute;
-  right: -30px;
-`;
-
-const ErrorIconForImg = styled.img`
-  position: absolute;
-`;
-
-//personFullname
 
 const PersonFirsName = styled.h1`
   min-width: 130px;
@@ -1223,69 +1105,6 @@ const PersonLastName = styled.h1`
   min-width: 170px;
   min-height: 45px;
 `;
-
-//about me-ს გრაფა დასაწყისი
-const AboutInput = styled.textarea`
-  height: 100px;
-  width: 100%;
-  border-radius: 4px;
-  border: 1px solid #bcbcbc;
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-  padding: 13px 16px;
-  resize: none;
-`;
-//about me-ს გრაფა დასასრული
-
-//პირადი ინფორმაციის ინფუთების კომპონენტის დასაწყისი
-
-const PersonInputContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-direction: column;
-  width: 100%;
-  gap: 8px;
-`;
-
-const InputName = styled.label`
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 21px;
-  letter-spacing: 0em;
-  position: relative;
-`;
-
-const NameInputField = styled.input`
-  height: 40px;
-  width: 100%;
-  border-radius: 4px;
-  border: none;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-  text-align: left;
-  padding: 13px 16px 14px 16px;
-`;
-
-const NamesHint = styled.span`
-  font-family: "HelveticaNeue";
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 21px;
-  letter-spacing: 0em;
-`;
-
-//პირადი ინფორმაციის ინფუთების კომპონენტის დასასრული
-
-//პირადი ინფორმაციის ფეიჯი კომპონენტებით
 
 const GoBack = styled(Link)`
   font-family: "HelveticaNeue";
@@ -1300,8 +1119,9 @@ const GoBack = styled(Link)`
   width: 40px;
   border-radius: 100px;
   border: none;
-  background-color: #ffffff;
-
+  background-color: #ececec;
+  position: absolute;
+  right: 900px;
   &:hover {
     cursor: pointer;
   }
@@ -1309,8 +1129,8 @@ const GoBack = styled(Link)`
 
 const PersonalContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   /* padding-bottom: 30px; */
   /* background-color: #f9f9f9; */
@@ -1327,91 +1147,9 @@ const MainInput = styled.div`
   overflow: auto;
 `;
 
-const InputInfo = styled.div`
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 45px;
-  background-color: #f9f9f9;
-  margin-bottom: 80px;
-  position: relative;
-`;
-
 const MainOutput = styled.div`
   height: 100%;
   width: 100%;
-`;
-
-const PersonNamesContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 55px;
-  box-sizing: border-box;
-`;
-
-const PictureFieldContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-`;
-
-const SelectPhotoInput = styled.input`
-  display: none;
-`;
-
-const SelectPhoto = styled.button`
-  height: 30px;
-  width: 160px;
-  border-radius: 4px;
-  background-color: #0e80bf;
-  color: #ffffff;
-  text-align: center;
-  border: none;
-
-  &:hover {
-    background-color: #02527d;
-    cursor: pointer;
-  }
-`;
-
-const ContactInput = styled.input`
-  height: 40px;
-  width: 100%;
-  left: 24px;
-  top: 37px;
-  border-radius: 4px;
-  border: 1px solid #bcbcbc;
-  padding: 13px 16px;
-`;
-
-const NextPageButton = styled.button`
-  align-self: flex-end;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  height: 48px;
-  width: 150px;
-  border-radius: 4px;
-  border: none;
-  font-family: "HelveticaNeue";
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0.08em;
-  background: #6b40e3;
-  color: #ffffff;
-  text-align: center;
-  margin-top: 20px;
-
-  &:hover {
-    background: #7949ff;
-    cursor: pointer;
-  }
 `;
 
 //პირადი ინფორმაციის ფეიჯი კომპონენტებით
@@ -1592,7 +1330,7 @@ const FullName = styled.div`
 
 const CvFirstPart = styled.div`
   display: flex;
-  /* padding-right: 0px; */
+  position: relative;
 `;
 
 const MainContentContainer = styled.div`

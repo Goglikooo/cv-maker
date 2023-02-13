@@ -14,6 +14,7 @@ export default function EducationDegree() {
   const [showDegree, setShowDegree] = useState(false);
   const [degree, setdegree] = useState<Degrees[] | null>(null);
   const [selectedDegree, setselectedDegree] = useState("");
+  const [degreeIndex, setDegreeIndex] = useState(null);
 
   useEffect(() => {
     const requestDegree = async () => {
@@ -52,6 +53,7 @@ export default function EducationDegree() {
                     key={degrees.id}
                     onClick={() => {
                       setselectedDegree(degrees.title);
+                      console.log(degree);
                       setShowDegree(!showDegree);
                     }}
                   >
