@@ -12,7 +12,14 @@ export default function PageHeader(props: Props) {
 
   return (
     <InputHeadingContainer>
-      <GoBack to={link}>&#60;</GoBack>
+      <GoBack
+        to={link}
+        onClick={() => {
+          sessionStorage.clear();
+        }}
+      >
+        &#60;
+      </GoBack>
       <InputHeading>{header}</InputHeading>
       <HeaderParahraph>{pageNumber}</HeaderParahraph>
     </InputHeadingContainer>

@@ -20,6 +20,11 @@ interface Props {
   experienceStartDate?: boolean;
   experienceEndDate?: boolean;
   textAreaRequired?: boolean;
+  positionId?: string;
+  employerId?: string;
+  startDateId?: string;
+  endDateId?: string;
+  jobAboutId?: string;
 }
 
 export default function ExperienceComponent(props: Props) {
@@ -39,6 +44,11 @@ export default function ExperienceComponent(props: Props) {
     experienceStartDate,
     experienceEndDate,
     textAreaRequired,
+    positionId,
+    employerId,
+    startDateId,
+    endDateId,
+    jobAboutId,
   } = props;
 
   return (
@@ -51,6 +61,7 @@ export default function ExperienceComponent(props: Props) {
         onChange={onChangeName}
         value={positionValue}
         invalid={invalidPosition}
+        id={positionId}
       />
 
       <NamesInput
@@ -61,6 +72,7 @@ export default function ExperienceComponent(props: Props) {
         onChange={onChangeEmployer}
         value={employerValue}
         invalid={invalidEmployer}
+        id={employerId}
       />
       <StartEndDatesContainer>
         <StartDate>
@@ -69,6 +81,7 @@ export default function ExperienceComponent(props: Props) {
             type={"date"}
             onChange={onChangeStartDate}
             value={startDateValue}
+            id={startDateId}
           />
           {experienceStartDate && <ErrorImage src={error} />}
         </StartDate>
@@ -78,6 +91,7 @@ export default function ExperienceComponent(props: Props) {
             type={"date"}
             onChange={onChangeEndDate}
             value={endDateValue}
+            id={endDateId}
           />
           {experienceEndDate && <ErrorImage src={error} />}
         </StartDate>
@@ -88,6 +102,7 @@ export default function ExperienceComponent(props: Props) {
         onChange={aboutJob}
         textAreaValue={textAreaValue}
         textAreaRequired={textAreaRequired}
+        id={jobAboutId}
       />
       <HorisontalLine></HorisontalLine>
     </ExperienceComponentContainer>

@@ -20,7 +20,7 @@ export default function NamesInput(props: Props) {
 
   return (
     <PersonInputContainer>
-      <InputName>{main}</InputName>
+      <InputName htmlFor={id}>{main}</InputName>
       <NameInputField
         type={type}
         placeholder={placeholder}
@@ -49,7 +49,7 @@ const PersonInputContainer = styled.div`
   position: relative;
 `;
 
-const InputName = styled.h4`
+const InputName = styled.label`
   font-family: "HelveticaNeue";
   font-size: 16px;
   font-weight: 600;

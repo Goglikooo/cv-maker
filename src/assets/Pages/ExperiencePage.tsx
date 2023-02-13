@@ -1,133 +1,218 @@
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
 import styled from "styled-components";
-import InputHeader from "../components/InputHeader";
-import InputTextArea from "../components/InputTextArea";
-import NamesInput from "../components/NamesInput";
 import ExperienceComponent from "../components/ExperienceComponent";
 import PageHeader from "../components/PageHeader";
-import { useState } from "react";
 
-export default function ExperiencePage() {
-  const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  };
-  const goForward = () => {
-    navigate(1);
-  };
+interface Props {
+  setPosition: React.Dispatch<React.SetStateAction<string>>;
+  setEmployer: React.Dispatch<React.SetStateAction<string>>;
+  setStartDate: React.Dispatch<React.SetStateAction<string>>;
+  setExperienceStartdate: React.Dispatch<React.SetStateAction<boolean>>;
+  setEndDate: React.Dispatch<React.SetStateAction<string>>;
+  setExperienceEnddate: React.Dispatch<React.SetStateAction<boolean>>;
+  setAboutJob: React.Dispatch<React.SetStateAction<string>>;
+  setTextAreaRequired: React.Dispatch<React.SetStateAction<boolean>>;
+  position: string;
+  employer: string;
+  startDate: string;
+  endDate: string;
+  aboutJob: string;
+  invalidPosition: boolean;
+  invalidEmployer: boolean;
+  experienceStartdate: boolean;
+  experienceEnddate: boolean;
+  textAreaRequired: boolean;
+  addMoreExperienceField: boolean;
+  addMoreExperienceFunction: any;
+  setPosition2: React.Dispatch<React.SetStateAction<string>>;
+  setEmployer2: React.Dispatch<React.SetStateAction<string>>;
+  position2: string;
+  employer2: string;
+  startDate2: string;
+  setStartDate2: React.Dispatch<React.SetStateAction<string>>;
+  endDate2: string;
+  setEndDate2: React.Dispatch<React.SetStateAction<string>>;
+  aboutJob2: string;
+  setAboutJob2: React.Dispatch<React.SetStateAction<string>>;
+  invalidPosition2: boolean;
+  invalidEmployer2: boolean;
+  experienceStartdate2: boolean;
+  setExperienceStartdate2: React.Dispatch<React.SetStateAction<boolean>>;
+  experienceEnddate2: boolean;
+  setExperienceEnddate2: React.Dispatch<React.SetStateAction<boolean>>;
+  textAreaRequired2: boolean;
+  setTextAreaRequired2: React.Dispatch<React.SetStateAction<boolean>>;
+  goBack1: any;
+  handleNextPageEducation: any;
+}
 
-  const [experienceList, setExperienceList] = useState([{ experience: "" }]);
-
-  const handleAddExperience = () => {
-    setExperienceList([...experienceList, { experience: "" }]);
-  };
-
-  const handleRemoveExperience = (index: number) => {
-    const list = [...experienceList];
-    list.splice(index, 1);
-    setExperienceList(list);
-  };
+export default function ExperiencePage(props: Props) {
+  const {
+    setPosition,
+    setEmployer,
+    setStartDate,
+    setExperienceStartdate,
+    setEndDate,
+    setExperienceEnddate,
+    setAboutJob,
+    setTextAreaRequired,
+    position,
+    employer,
+    startDate,
+    endDate,
+    aboutJob,
+    invalidPosition,
+    invalidEmployer,
+    experienceStartdate,
+    experienceEnddate,
+    textAreaRequired,
+    addMoreExperienceField,
+    addMoreExperienceFunction,
+    setPosition2,
+    setEmployer2,
+    position2,
+    employer2,
+    startDate2,
+    setStartDate2,
+    endDate2,
+    setEndDate2,
+    aboutJob2,
+    setAboutJob2,
+    invalidPosition2,
+    invalidEmployer2,
+    experienceStartdate2,
+    setExperienceStartdate2,
+    experienceEnddate2,
+    setExperienceEnddate2,
+    textAreaRequired2,
+    setTextAreaRequired2,
+    goBack1,
+    handleNextPageEducation,
+  } = props;
 
   return (
-    <PersonalContainer>
-      <MainInput>
+    <PersonalContainerExperience>
+      <InputInfo>
         <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
-        <InputInfo>
-          {/* შეამოწმოს ერეის სიგრძე და ამის მიხედვით დააბრუნოს გამოცდილების კომპონენტი */}
-          {experienceList.map((singleExperience, index) => (
-            <ExperienceContainer key={index}>
-              {/* თუ ერეის სიგრძე არის 1 ზე მეტი, გაჩნდეს წაშლის ღილაკი კომპონენტზე */}
-              {experienceList.length > 1 && (
-                <DeleteButton
-                  onClick={() => {
-                    handleRemoveExperience(index);
-                  }}
-                >
-                  გაუქმება
-                </DeleteButton>
-              )}
-              <ExperienceComponent />
-              {/* თუ ერეის სიგრძე არ აღემატება სამს(რენდომად), გაქრეს ახალი გამოცდილების დამატების ღილაკი/ფუქცია */}
-              {experienceList.length - 1 === index &&
-                experienceList.length < 3 && (
-                  <AddMoreExperiencebutton onClick={handleAddExperience}>
-                    მეტი გამოცდილების დამატება
-                  </AddMoreExperiencebutton>
-                )}
-            </ExperienceContainer>
-          ))}
-        </InputInfo>
-        <BackOrNextContainer>
-          <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-          <ForwardButton to={"education"}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
-        </BackOrNextContainer>
-      </MainInput>
-      <MainOutput></MainOutput>
-    </PersonalContainer>
+
+        <ExperienceContainer>
+          <ExperienceComponent
+            onChangeName={(e: any) => {
+              setPosition(e.target.value);
+            }}
+            onChangeEmployer={(e: any) => {
+              setEmployer(e.target.value);
+            }}
+            onChangeStartDate={(e: any) => {
+              setStartDate(e.target.value);
+              setExperienceStartdate(false);
+            }}
+            onChangeEndDate={(e: any) => {
+              setEndDate(e.target.value);
+              setExperienceEnddate(false);
+            }}
+            aboutJob={(e: any) => {
+              setAboutJob(e.target.value);
+              setTextAreaRequired(false);
+            }}
+            positionValue={position}
+            employerValue={employer}
+            startDateValue={startDate}
+            endDateValue={endDate}
+            textAreaValue={aboutJob}
+            invalidPosition={invalidPosition}
+            invalidEmployer={invalidEmployer}
+            experienceStartDate={experienceStartdate}
+            experienceEndDate={experienceEnddate}
+            textAreaRequired={textAreaRequired}
+            positionId={"positionId1"}
+            employerId={"employerId1"}
+            startDateId={"startDateId1"}
+            endDateId={"endDateId1"}
+            jobAboutId={"jobAboutId1"}
+          />
+          {addMoreExperienceField ? (
+            ""
+          ) : (
+            <AddMoreExperiencebutton onClick={addMoreExperienceFunction}>
+              მეტი გამოცდილების დამატება
+            </AddMoreExperiencebutton>
+          )}
+        </ExperienceContainer>
+        {addMoreExperienceField && (
+          <ExperienceContainer>
+            <ExperienceComponent
+              onChangeName={(e: any) => {
+                setPosition2(e.target.value);
+              }}
+              onChangeEmployer={(e: any) => {
+                setEmployer2(e.target.value);
+              }}
+              onChangeStartDate={(e: any) => {
+                setStartDate2(e.target.value);
+                setExperienceStartdate2(false);
+              }}
+              onChangeEndDate={(e: any) => {
+                setEndDate2(e.target.value);
+                setExperienceEnddate2(false);
+              }}
+              aboutJob={(e: any) => {
+                setAboutJob2(e.target.value);
+                setTextAreaRequired2(false);
+              }}
+              positionValue={position2}
+              employerValue={employer2}
+              startDateValue={startDate2}
+              endDateValue={endDate2}
+              textAreaValue={aboutJob2}
+              invalidPosition={invalidPosition2}
+              invalidEmployer={invalidEmployer2}
+              experienceStartDate={experienceStartdate2}
+              experienceEndDate={experienceEnddate2}
+              textAreaRequired={textAreaRequired2}
+              positionId={"positionId2"}
+              employerId={"employerId2"}
+              startDateId={"startDateId2"}
+              endDateId={"endDateId2"}
+              jobAboutId={"jobAboutId2"}
+            />
+          </ExperienceContainer>
+        )}
+      </InputInfo>
+      <BackOrNextContainer>
+        <BackButton onClick={goBack1}>ᲣᲙᲐᲜ</BackButton>
+        <ForwardButton onClick={handleNextPageEducation}>ᲨᲔᲛᲓᲔᲒᲘ</ForwardButton>
+      </BackOrNextContainer>
+    </PersonalContainerExperience>
   );
 }
 
-const ExperienceContainer = styled.div`
+const PersonalContainerExperience = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  padding-bottom: 30px;
+`;
+
+const InputInfo = styled.div`
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 45px;
+  background-color: #f9f9f9;
+  margin-bottom: 80px;
   position: relative;
 `;
 
-const DeleteButton = styled.button`
-  height: 25px;
-  width: 100px;
-  align-self: flex-end;
-  margin: 0;
-  position: absolute;
-  right: 0;
-  border: none;
-  border-radius: 4px;
-  background-color: #d0351d;
-  color: white;
-  font-family: "HelveticaNeue";
-  font-size: 14px;
-  &:hover {
-    background-color: #ff3010;
-    cursor: pointer;
-  }
-`;
-
-const BackButton = styled.button`
-  height: 48px;
-  width: 113px;
-  background: #6b40e3;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: #ffffff;
-  border: none;
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const ForwardButton = styled(Link)`
-  height: 48px;
-  width: 151px;
-  background: #6b40e3;
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: #ffffff;
-  border: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const BackOrNextContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
+const ExperienceContainer = styled.div`
+  position: relative;
   width: 100%;
-  align-items: center;
+  border: none;
 `;
 
 const AddMoreExperiencebutton = styled.button`
@@ -147,57 +232,42 @@ const AddMoreExperiencebutton = styled.button`
   }
 `;
 
-const PersonalContainer = styled.div`
+const BackOrNextContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+`;
+
+const BackButton = styled.button`
+  height: 48px;
+  width: 113px;
+  background: #6b40e3;
+  border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-`;
-
-const MainInput = styled.div`
-  background-color: #f9f9f9;
-  display: block;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-  padding: 30px 90px 30px 90px;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
-`;
-
-const MainOutput = styled.div`
-  background-color: #ffffff;
-  height: 100%;
-  width: 100%;
-`;
-
-const GoBack = styled(Link)`
-  font-family: "HelveticaNeue";
-  font-size: 20px;
-  height: 40px;
-  width: 40px;
   text-decoration: none;
-  align-self: flex-start;
-  text-align: center;
-  margin: 15px 20px 0px 20px;
-  height: 30px;
-  width: 40px;
-  border-radius: 100px;
+  color: #ffffff;
   border: none;
-  background-color: #ffffff;
-
   &:hover {
     cursor: pointer;
   }
 `;
 
-const InputInfo = styled.div`
-  width: 100%;
-  height: auto;
+const ForwardButton = styled.button`
+  height: 48px;
+  width: 151px;
+  background: #6b40e3;
+  border-radius: 4px;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 45px;
-  margin-bottom: 80px;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #ffffff;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

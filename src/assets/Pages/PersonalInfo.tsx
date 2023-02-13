@@ -3,7 +3,6 @@ import InputHeader from "../components/InputHeader";
 import { Link, useNavigate } from "react-router-dom";
 import NamesInput from "../components/NamesInput";
 import InputTextArea from "../components/InputTextArea";
-import MainoutputCv from "../components/WholeCV";
 import { useEffect, useState, useRef } from "react";
 import atSymbol from "../images/at-Symbol.png";
 import phoneIcon from "../images/phone-icon.png";
@@ -12,9 +11,16 @@ import ok from "../images/ok.png";
 import error from "../images/error.png";
 import ExperienceComponent from "../components/ExperienceComponent";
 import PageHeader from "../components/PageHeader";
-
 import axios from "axios";
 import arrowdown from "../images/down-arrow.png";
+import PersonalInformation from "../Pages/PersonalInformation";
+import ExperiencePage from "../Pages/ExperiencePage";
+import EducationPage from "../Pages/EducationPage";
+//
+//
+//
+//
+//
 
 export default function PersonalInfo() {
   const [name, setName] = useState("");
@@ -38,9 +44,9 @@ export default function PersonalInfo() {
   const [phoneOk, setPhoneOk] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
 
-  const [goToPersonalPage, setGoToPersonalPage] = useState(false);
+  const [goToPersonalPage, setGoToPersonalPage] = useState(true);
   const [goToExperiencePage, setGoToExperiencePage] = useState(false);
-  const [goToEducationPage, setGoToEducationPage] = useState(true);
+  const [goToEducationPage, setGoToEducationPage] = useState(false);
 
   //pirveli experience
   const [position, setPosition] = useState("");
@@ -54,6 +60,19 @@ export default function PersonalInfo() {
   const [experienceEnddate, setExperienceEnddate] = useState(false);
   const [textAreaRequired, setTextAreaRequired] = useState(false);
   //end of pirveli experience
+
+  const goBack1 = () => {
+    setGoToPersonalPage(true);
+    setGoToExperiencePage(false);
+    console.log("Go back");
+  };
+
+  const goBack2 = () => {
+    setGoToPersonalPage(false);
+    setGoToEducationPage(false);
+    setGoToExperiencePage(true);
+    console.log("Go back");
+  };
 
   //meore experience start
   const [position2, setPosition2] = useState("");
@@ -107,6 +126,308 @@ export default function PersonalInfo() {
     useState(false);
 
   //meore education end
+
+  // save information in sessionStorage Start
+
+  useEffect(() => {
+    const savedName = sessionStorage.getItem("SavedName");
+    {
+      savedName != null && setName(JSON.parse(savedName));
+    }
+    const savedLastName = sessionStorage.getItem("SavedLastName");
+    {
+      savedLastName != null && setLastName(JSON.parse(savedLastName));
+    }
+    const savedEmail = sessionStorage.getItem("SavedEmail");
+    {
+      savedEmail != null && setEmail(JSON.parse(savedEmail));
+    }
+    const savedPhone = sessionStorage.getItem("SavedPhone");
+    {
+      savedPhone != null && setPhone(JSON.parse(savedPhone));
+    }
+    const savedAboutMe = sessionStorage.getItem("SavedAboutMe");
+    {
+      savedAboutMe != null && setAboutMe(JSON.parse(savedAboutMe));
+    }
+    const savedPosition = sessionStorage.getItem("SavedPosition");
+    {
+      savedPosition != null && setPosition(JSON.parse(savedPosition));
+    }
+    const savedEmployer = sessionStorage.getItem("SavedEmployer");
+    {
+      savedEmployer != null && setEmployer(JSON.parse(savedEmployer));
+    }
+    const savedStartDate = sessionStorage.getItem("SavedStartDate");
+    {
+      savedStartDate != null && setStartDate(JSON.parse(savedStartDate));
+    }
+    const savedEndtDate = sessionStorage.getItem("SavedEndDate");
+    {
+      savedEndtDate != null && setEndDate(JSON.parse(savedEndtDate));
+    }
+    const savedAboutJob = sessionStorage.getItem("SavedAboutJob");
+    {
+      savedAboutJob != null && setAboutJob(JSON.parse(savedAboutJob));
+    }
+    const savedPosition2 = sessionStorage.getItem("SavedPosition2");
+    {
+      savedPosition2 != null && setPosition2(JSON.parse(savedPosition2));
+    }
+    const savedEmployer2 = sessionStorage.getItem("SavedEmployer2");
+    {
+      savedEmployer2 != null && setEmployer2(JSON.parse(savedEmployer2));
+    }
+    const savedStartDate2 = sessionStorage.getItem("SavedStartDate2");
+    {
+      savedStartDate2 != null && setStartDate2(JSON.parse(savedStartDate2));
+    }
+    const savedEndtDate2 = sessionStorage.getItem("SavedEndDate2");
+    {
+      savedEndtDate2 != null && setEndDate2(JSON.parse(savedEndtDate2));
+    }
+    const savedAboutJob2 = sessionStorage.getItem("SavedAboutJob2");
+    {
+      savedAboutJob2 != null && setAboutJob2(JSON.parse(savedAboutJob2));
+    }
+    const savedAddMoreEducation = sessionStorage.getItem("AddMoreEducation");
+    {
+      savedAddMoreEducation != null &&
+        setAddMoreEducation(JSON.parse(savedAddMoreEducation));
+    }
+    const savedAddMoreExperienceField = sessionStorage.getItem(
+      "addMoreExperienceField"
+    );
+    {
+      savedAddMoreExperienceField != null &&
+        setAddMoreExperienceField(JSON.parse(savedAddMoreExperienceField));
+    }
+
+    const savedUniversityName = sessionStorage.getItem("UniversityName");
+    {
+      savedUniversityName != null &&
+        setUniversityName(JSON.parse(savedUniversityName));
+    }
+    const savedSelectedDegree = sessionStorage.getItem("selectedDegree");
+    {
+      savedSelectedDegree != null &&
+        setselectedDegree(JSON.parse(savedSelectedDegree));
+    }
+    const savedUniversityEndDate = sessionStorage.getItem("universityEndDate");
+    {
+      savedUniversityEndDate != null &&
+        setUniversityEndDate(JSON.parse(savedUniversityEndDate));
+    }
+    const savedUniversityDescription = sessionStorage.getItem(
+      "universityDescription"
+    );
+    {
+      savedUniversityDescription != null &&
+        setUniversityDescription(JSON.parse(savedUniversityDescription));
+    }
+    //
+    //
+    //
+    const savedUniversityName2 = sessionStorage.getItem("UniversityName2");
+    {
+      savedUniversityName2 != null &&
+        setUniversityName2(JSON.parse(savedUniversityName2));
+    }
+    const savedSelectedDegree2 = sessionStorage.getItem("selectedDegree2");
+    {
+      savedSelectedDegree2 != null &&
+        setselectedDegree2(JSON.parse(savedSelectedDegree2));
+    }
+    const savedUniversityEndDate2 =
+      sessionStorage.getItem("universityEndDate2");
+    {
+      savedUniversityEndDate2 != null &&
+        setUniversityEndDate2(JSON.parse(savedUniversityEndDate2));
+    }
+    const savedUniversityDescription2 = sessionStorage.getItem(
+      "universityDescription2"
+    );
+    {
+      savedUniversityDescription2 != null &&
+        setUniversityDescription2(JSON.parse(savedUniversityDescription2));
+    }
+  }, []);
+
+  //
+  //
+  //
+  //
+
+  useEffect(() => {
+    sessionStorage.setItem("SavedAboutMe", JSON.stringify(aboutMe));
+    sessionStorage.setItem(
+      "AddMoreEducation",
+      JSON.stringify(addMoreEducation)
+    );
+    sessionStorage.setItem(
+      "addMoreExperienceField",
+      JSON.stringify(addMoreExperienceField)
+    );
+    sessionStorage.setItem("UniversityName", JSON.stringify(universityName));
+    sessionStorage.setItem("selectedDegree", JSON.stringify(selectedDegree));
+    sessionStorage.setItem(
+      "universityEndDate",
+      JSON.stringify(universityEndDate)
+    );
+    sessionStorage.setItem(
+      "universityDescription",
+      JSON.stringify(universityDescription)
+    );
+    sessionStorage.setItem("UniversityName2", JSON.stringify(universityName2));
+    sessionStorage.setItem("selectedDegree2", JSON.stringify(selectedDegree2));
+    sessionStorage.setItem(
+      "universityEndDate2",
+      JSON.stringify(universityEndDate2)
+    );
+    sessionStorage.setItem(
+      "universityDescription2",
+      JSON.stringify(universityDescription2)
+    );
+  }, [
+    aboutMe,
+    addMoreEducation,
+    addMoreExperienceField,
+    universityName,
+    selectedDegree,
+    universityEndDate,
+    universityDescription,
+    universityName2,
+    selectedDegree2,
+    universityEndDate2,
+    universityDescription2,
+  ]);
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+
+  useEffect(() => {
+    if (nameValidator(name)) {
+      setFirsNameOk(true);
+      setFirstNameError(false);
+      sessionStorage.setItem("SavedName", JSON.stringify(name));
+    }
+
+    if (lastNameValidator(lastName)) {
+      setLastNameOk(true);
+      setLastNameError(false);
+      sessionStorage.setItem("SavedLastName", JSON.stringify(lastName));
+    }
+
+    if (emailValidator(email)) {
+      setEmailOk(true);
+      setEmailError(false);
+      sessionStorage.setItem("SavedEmail", JSON.stringify(email));
+    }
+
+    if (phoneNumberValidator(phone)) {
+      setPhoneOk(true);
+      setPhoneError(false);
+      sessionStorage.setItem("SavedPhone", JSON.stringify(phone));
+    }
+    if (position.length > 2) {
+      setIvalidPosition(false);
+      sessionStorage.setItem("SavedPosition", JSON.stringify(position));
+    }
+    if (employer.length > 2) {
+      setInvalidEmployer(false);
+      sessionStorage.setItem("SavedEmployer", JSON.stringify(employer));
+    }
+    if (startDate) {
+      setExperienceStartdate(false);
+      sessionStorage.setItem("SavedStartDate", JSON.stringify(startDate));
+    }
+    if (endDate) {
+      setExperienceEnddate(false);
+      sessionStorage.setItem("SavedEndDate", JSON.stringify(endDate));
+    }
+    if (aboutJob.length > 2) {
+      setTextAreaRequired(false);
+      sessionStorage.setItem("SavedAboutJob", JSON.stringify(aboutJob));
+    }
+
+    if (position2.length > 2) {
+      setIvalidPosition2(false);
+      sessionStorage.setItem("SavedPosition2", JSON.stringify(position2));
+    }
+    if (employer2.length > 2) {
+      setInvalidEmployer2(false);
+      sessionStorage.setItem("SavedEmployer2", JSON.stringify(employer2));
+    }
+    if (startDate2) {
+      setExperienceStartdate2(false);
+      sessionStorage.setItem("SavedStartDate2", JSON.stringify(startDate2));
+    }
+    if (endDate2) {
+      setExperienceEnddate2(false);
+      sessionStorage.setItem("SavedEndDate2", JSON.stringify(endDate2));
+    }
+    if (aboutJob2.length > 2) {
+      setTextAreaRequired2(false);
+      sessionStorage.setItem("SavedAboutJob2", JSON.stringify(aboutJob2));
+    }
+    if (universityName.length > 2) {
+      setUniversityNameError(false);
+      sessionStorage.setItem(
+        "SavedUnivesityName",
+        JSON.stringify(universityName)
+      );
+    }
+    if (universityName2.length > 2) {
+      setUniversityNameError2(false);
+      sessionStorage.setItem(
+        "SavedUnivesityName2",
+        JSON.stringify(universityName2)
+      );
+    }
+  }, [
+    name,
+    lastName,
+    email,
+    phone,
+    aboutMe,
+    photoImage,
+    position,
+    employer,
+    startDate,
+    endDate,
+    aboutJob,
+    position2,
+    employer2,
+    startDate2,
+    endDate2,
+    aboutJob2,
+    universityName,
+    invalidPosition,
+    invalidEmployer,
+    invalidPosition2,
+    invalidEmployer2,
+  ]);
+
+  // save information in sessionStorage end
 
   interface Degrees {
     id: number;
@@ -263,7 +584,7 @@ export default function PersonalInfo() {
       employer2 &&
       startDate2 &&
       endDate2 &&
-      aboutJob
+      aboutJob2
     ) {
       setGoToEducationPage(true);
       setGoToExperiencePage(false);
@@ -288,66 +609,6 @@ export default function PersonalInfo() {
     };
     requestDegree2();
   }, []);
-
-  useEffect(() => {
-    if (nameValidator(name)) {
-      setFirsNameOk(true);
-      setFirstNameError(false);
-    }
-
-    if (lastNameValidator(lastName)) {
-      setLastNameOk(true);
-      setLastNameError(false);
-    }
-
-    if (emailValidator(email)) {
-      setEmailOk(true);
-      setEmailError(false);
-    }
-
-    if (phoneNumberValidator(phone)) {
-      setPhoneOk(true);
-      setPhoneError(false);
-    }
-    if (position.length > 2) {
-      setIvalidPosition(false);
-    }
-    if (employer.length > 2) {
-      setInvalidEmployer(false);
-    }
-    if (universityName.length > 2) {
-      setUniversityNameError(false);
-    }
-    if (position2.length > 2) {
-      setIvalidPosition2(false);
-    }
-    if (employer2.length > 2) {
-      setInvalidEmployer2(false);
-    }
-    if (aboutJob2.length > 2) {
-      setTextAreaRequired2(false);
-    }
-  }, [
-    name,
-    lastName,
-    email,
-    phone,
-    aboutMe,
-    photoImage,
-    position,
-    employer,
-    startDate,
-    endDate,
-    universityName,
-    invalidPosition,
-    invalidEmployer,
-    position2,
-    employer2,
-    startDate2,
-    endDate2,
-    invalidPosition2,
-    invalidEmployer2,
-  ]);
 
   const nameValidator = (name: string) => {
     const regEx = new RegExp(/^[ა-ჰ]{2,}$/g);
@@ -432,32 +693,13 @@ export default function PersonalInfo() {
   };
 
   const handleImgSave = (event: any) => {
-    setPhotoImage(URL.createObjectURL(event.target.files[0]));
+    const imgUrl = URL.createObjectURL(event.target.files[0]);
+    setPhotoImage(imgUrl);
     setPhotoImageError(false);
     return true;
   };
 
   //experience Page setup start
-
-  const navigate = useNavigate();
-  const goBack = () => {
-    navigate(-1);
-  };
-  const goForward = () => {
-    navigate(1);
-  };
-
-  const [experienceList, setExperienceList] = useState([{ experience: "" }]);
-
-  const handleAddExperience = () => {
-    setExperienceList([...experienceList, { experience: "" }]);
-  };
-
-  const handleRemoveExperience = (index: number) => {
-    const list = [...experienceList];
-    list.splice(index, 1);
-    setExperienceList(list);
-  };
 
   //experience Page setup end
 
@@ -467,367 +709,128 @@ export default function PersonalInfo() {
         {/* ეს არის პირველი ფეიჯის დასაწყისი */}
 
         {goToPersonalPage && (
-          <InputInfo>
-            <PageHeader header="პირადი ინფო" pageNumber="1/3" link={"/"} />
-            <PersonNamesContainer>
-              <PersonInputContainer>
-                <InputName>სახელი </InputName>
-                <NamesInputContainer>
-                  <NameInputField
-                    type="text"
-                    placeholder="ანზორ"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                  {firsNameOk && <OkImage src={ok} />}
-                  {firstNameError && <ErrorImage src={error} />}
-                </NamesInputContainer>
-
-                <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
-              </PersonInputContainer>
-              <PersonInputContainer>
-                <InputName>გვარი</InputName>
-                <NamesInputContainer>
-                  <NameInputField
-                    type="text"
-                    placeholder="მუმლაძე"
-                    value={lastName}
-                    onChange={(e) => {
-                      setLastName(e.target.value);
-                    }}
-                  />
-                  {lastNameOk && <OkImage src={ok} />}
-                  {lastNameError && <ErrorImage src={error} />}
-                </NamesInputContainer>
-                <NamesHint>"მინიმუმ 2 ასო, ქართული ასოები"</NamesHint>
-              </PersonInputContainer>
-            </PersonNamesContainer>
-
-            <PictureFieldContainer>
-              <InputName>პირადი ფოტოს ატვირთვა</InputName>
-
-              <SelectPhotoInput
-                type="file"
-                ref={hiddenFileInput}
-                onChange={handleImgSave}
-              />
-              <SelectPhoto onClick={handleClick}>ატვირთვა</SelectPhoto>
-              {photoImageError && <ErrorImage src={error} />}
-            </PictureFieldContainer>
-
-            <PersonInputContainer>
-              <InputName>ᲩᲔᲛ ᲨᲔᲡᲐᲮᲔᲑ</InputName>
-              <AboutInput
-                placeholder="ზოგადი ინფო შენ შესახებ"
-                onChange={(e) => {
-                  setAboutMe(e.target.value);
-                }}
-              />
-            </PersonInputContainer>
-            <PersonInputContainer>
-              <InputName>ელ.ფოსტა</InputName>
-              <NamesInputContainer>
-                <ContactInput
-                  type="email"
-                  placeholder="anzorr666@redberry.ge"
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-                {emailOk && <OkImage src={ok} />}
-                {emailError && <ErrorImage src={error} />}
-              </NamesInputContainer>
-              <NamesHint>უნდა მთავრდებოდეს @redberry.ge-ით</NamesHint>
-            </PersonInputContainer>
-            <PersonInputContainer>
-              <InputName>მობილურის ნომერი</InputName>
-              <NamesInputContainer>
-                <ContactInput
-                  type="text"
-                  placeholder="+995 551 12 34 56"
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                />
-                {phoneOk && <OkImage src={ok} />}
-                {phoneError && <ErrorImage src={error} />}
-              </NamesInputContainer>
-              <NamesHint>
-                უნდა აკმაყოფილებდეს ქართული მობილურის ნომრის ფორმატს
-              </NamesHint>
-            </PersonInputContainer>
-            {/* აქედან სხვა გვერდძე არ გადავა უბრალოდ სხვა რამეს გამოაჩენს */}
-
-            <NextPageButton onClick={handleNextPageExperience}>
-              ᲨᲔᲛᲓᲔᲒᲘ
-            </NextPageButton>
-          </InputInfo>
+          <PersonalInformation
+            name={name}
+            setName={setName}
+            firsNameOk={firsNameOk}
+            firstNameError={firstNameError}
+            lastName={lastName}
+            setLastName={setLastName}
+            lastNameOk={lastNameOk}
+            lastNameError={lastNameError}
+            hiddenFileInput={hiddenFileInput}
+            handleImgSave={handleImgSave}
+            handleClick={handleClick}
+            photoImageError={photoImageError}
+            setAboutMe={setAboutMe}
+            aboutMe={aboutMe}
+            setEmail={setEmail}
+            email={email}
+            emailOk={emailOk}
+            emailError={emailError}
+            setPhone={setPhone}
+            phone={phone}
+            phoneOk={phoneOk}
+            phoneError={phoneError}
+            handleNextPageExperience={handleNextPageExperience}
+          />
         )}
 
         {/* ეს არის პირველი ფეიჯის დასასრული */}
         {/* აქ იწყება გამოცდილების ფეიჯი */}
-        {goToExperiencePage && (
-          <PersonalContainerExperience>
-            <InputInfo>
-              <PageHeader header="ᲒᲐᲛᲝᲪᲓᲘᲚᲔᲑᲐ" pageNumber="2/3" link={"/"} />
 
-              <ExperienceContainer>
-                <ExperienceComponent
-                  onChangeName={(e: any) => {
-                    setPosition(e.target.value);
-                  }}
-                  onChangeEmployer={(e: any) => {
-                    setEmployer(e.target.value);
-                  }}
-                  onChangeStartDate={(e: any) => {
-                    setStartDate(e.target.value);
-                    setExperienceStartdate(false);
-                  }}
-                  onChangeEndDate={(e: any) => {
-                    setEndDate(e.target.value);
-                    setExperienceEnddate(false);
-                  }}
-                  aboutJob={(e: any) => {
-                    setAboutJob(e.target.value);
-                    setTextAreaRequired(false);
-                  }}
-                  positionValue={position}
-                  employerValue={employer}
-                  startDateValue={startDate}
-                  endDateValue={endDate}
-                  textAreaValue={aboutJob}
-                  invalidPosition={invalidPosition}
-                  invalidEmployer={invalidEmployer}
-                  experienceStartDate={experienceStartdate}
-                  experienceEndDate={experienceEnddate}
-                  textAreaRequired={textAreaRequired}
-                />
-                {addMoreExperienceField ? (
-                  ""
-                ) : (
-                  <AddMoreExperiencebutton onClick={addMoreExperienceFunction}>
-                    მეტი გამოცდილების დამატება
-                  </AddMoreExperiencebutton>
-                )}
-              </ExperienceContainer>
-              {addMoreExperienceField && (
-                <ExperienceContainer>
-                  <ExperienceComponent
-                    onChangeName={(e: any) => {
-                      setPosition2(e.target.value);
-                    }}
-                    onChangeEmployer={(e: any) => {
-                      setEmployer2(e.target.value);
-                    }}
-                    onChangeStartDate={(e: any) => {
-                      setStartDate2(e.target.value);
-                      setExperienceStartdate2(false);
-                    }}
-                    onChangeEndDate={(e: any) => {
-                      setEndDate2(e.target.value);
-                      setExperienceEnddate2(false);
-                    }}
-                    aboutJob={(e: any) => {
-                      setAboutJob2(e.target.value);
-                      setTextAreaRequired2(false);
-                    }}
-                    positionValue={position2}
-                    employerValue={employer2}
-                    startDateValue={startDate2}
-                    endDateValue={endDate2}
-                    textAreaValue={aboutJob2}
-                    invalidPosition={invalidPosition2}
-                    invalidEmployer={invalidEmployer2}
-                    experienceStartDate={experienceStartdate2}
-                    experienceEndDate={experienceEnddate2}
-                    textAreaRequired={textAreaRequired2}
-                  />
-                </ExperienceContainer>
-              )}
-            </InputInfo>
-            <BackOrNextContainer>
-              <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-              <ForwardButton onClick={handleNextPageEducation}>
-                ᲨᲔᲛᲓᲔᲒᲘ
-              </ForwardButton>
-            </BackOrNextContainer>
-          </PersonalContainerExperience>
+        {goToExperiencePage && (
+          <ExperiencePage
+            setPosition={setPosition}
+            setEmployer={setEmployer}
+            setStartDate={setStartDate}
+            setExperienceStartdate={setExperienceStartdate}
+            setEndDate={setEndDate}
+            setExperienceEnddate={setExperienceEnddate}
+            setAboutJob={setAboutJob}
+            setTextAreaRequired={setTextAreaRequired}
+            position={position}
+            employer={employer}
+            startDate={startDate}
+            endDate={endDate}
+            aboutJob={aboutJob}
+            invalidPosition={invalidPosition}
+            invalidEmployer={invalidEmployer}
+            experienceStartdate={experienceStartdate}
+            experienceEnddate={experienceEnddate}
+            textAreaRequired={textAreaRequired}
+            addMoreExperienceField={addMoreExperienceField}
+            addMoreExperienceFunction={addMoreExperienceFunction}
+            setPosition2={setPosition2}
+            setEmployer2={setEmployer2}
+            position2={position2}
+            employer2={employer2}
+            startDate2={startDate2}
+            setStartDate2={setStartDate2}
+            endDate2={endDate2}
+            setEndDate2={setEndDate2}
+            aboutJob2={aboutJob2}
+            setAboutJob2={setAboutJob2}
+            invalidPosition2={invalidPosition2}
+            invalidEmployer2={invalidEmployer2}
+            experienceStartdate2={experienceStartdate2}
+            setExperienceStartdate2={setExperienceStartdate2}
+            experienceEnddate2={experienceEnddate2}
+            setExperienceEnddate2={setExperienceEnddate2}
+            textAreaRequired2={textAreaRequired2}
+            setTextAreaRequired2={setTextAreaRequired2}
+            goBack1={goBack1}
+            handleNextPageEducation={handleNextPageEducation}
+          />
         )}
         {/* აქ მთავრდება გამოცდილების ფეიჯი */}
 
         {/* აქ იწყება განათლების ფეიჯი */}
 
         {goToEducationPage && (
-          <InputInfo>
-            <PageHeader header="ᲒᲐᲜᲐᲗᲚᲔᲑᲐ" pageNumber="3/3" link={"/"} />
-            <NamesInput
-              main={"სასწავლებელი"}
-              placeholder={"სასწავლებელი"}
-              hint={"მინიმუმ 2 სიმბოლო"}
-              type={"text"}
-              value={universityName}
-              onChange={(e: any) => {
-                setUniversityName(e.target.value);
-              }}
-              invalid={universityNameError}
-            />
-
-            {/* აქ იწყება ედუქეიშენ კომპონენტი!  */}
-            <EducationContainer>
-              <DegreeDiv>
-                <DegreeName>ხარისხი</DegreeName>
-                <DegreeOptionsContainer
-                  onClick={() => {
-                    setShowDegree(!showDegree);
-                  }}
-                >
-                  <ChooseDegree>
-                    {selectedDegree ? selectedDegree : "აირჩიეთ ხარისხი"}
-                  </ChooseDegree>
-                  <Button>
-                    <DownArrow src={arrowdown} alt="" />
-                  </Button>
-                  {selectedDegreeError && <ErrorImage src={error} />}
-                </DegreeOptionsContainer>
-                {showDegree && (
-                  <DegreeOptions>
-                    <List>
-                      {degree &&
-                        degree.map((degrees) => (
-                          <ListItem
-                            key={degrees.id}
-                            onClick={() => {
-                              setselectedDegree(degrees.title);
-                              setShowDegree(!showDegree);
-                              setselectedDegreeError(false);
-                            }}
-                          >
-                            {degrees.title}
-                          </ListItem>
-                        ))}
-                    </List>
-                  </DegreeOptions>
-                )}
-              </DegreeDiv>
-              <NamesInput
-                main={"დამთავრების რიცხვი"}
-                type={"date"}
-                onChange={(e: any) => {
-                  setUniversityEndDate(e.target.value);
-                  setUniversityEndDateError(false);
-                }}
-                value={universityEndDate}
-                invalid={universityEndDateError}
-              />
-            </EducationContainer>
-            <InputTextArea
-              main={"აღწერა"}
-              placeholder={"განათლების აღწერა"}
-              onChange={(e: any) => {
-                setUniversityDescription(e.target.value);
-                setUniversityDescriptionError(false);
-              }}
-              textAreaRequired={unviersityDescriptionError}
-            />
-            {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
-            <HorisontalLine></HorisontalLine>
-            {addMoreEducation ? (
-              ""
-            ) : (
-              <AddMoreExperiencebutton
-                onClick={() => {
-                  setAddMoreEducation(true);
-                }}
-              >
-                სხვა სასწავლებლის დამატება
-              </AddMoreExperiencebutton>
-            )}
-
-            {addMoreEducation && (
-              <InputInfo>
-                <NamesInput
-                  main={"სასწავლებელი"}
-                  placeholder={"სასწავლებელი"}
-                  hint={"მინიმუმ 2 სიმბოლო"}
-                  type={"text"}
-                  value={universityName2}
-                  onChange={(e: any) => {
-                    setUniversityName2(e.target.value);
-                  }}
-                  invalid={universityNameError2}
-                />
-
-                {/* აქ იწყება ედუქეიშენ კომპონენტი!  */}
-                <EducationContainer>
-                  <DegreeDiv>
-                    <DegreeName>ხარისხი</DegreeName>
-                    <DegreeOptionsContainer
-                      onClick={() => {
-                        setShowDegree2(!showDegree2);
-                      }}
-                    >
-                      <ChooseDegree>
-                        {selectedDegree2 ? selectedDegree2 : "აირჩიეთ ხარისხი"}
-                      </ChooseDegree>
-                      <Button>
-                        <DownArrow src={arrowdown} alt="" />
-                      </Button>
-                      {selectedDegreeError2 && <ErrorImage src={error} />}
-                    </DegreeOptionsContainer>
-                    {showDegree2 && (
-                      <DegreeOptions>
-                        <List>
-                          {degree2 &&
-                            degree2.map((degrees) => (
-                              <ListItem
-                                key={degrees.id}
-                                onClick={() => {
-                                  setselectedDegree2(degrees.title);
-                                  setShowDegree2(!showDegree2);
-                                  setselectedDegreeError2(false);
-                                }}
-                              >
-                                {degrees.title}
-                              </ListItem>
-                            ))}
-                        </List>
-                      </DegreeOptions>
-                    )}
-                  </DegreeDiv>
-                  <NamesInput
-                    main={"დამთავრების რიცხვი"}
-                    type={"date"}
-                    onChange={(e: any) => {
-                      setUniversityEndDate2(e.target.value);
-                      setUniversityEndDateError2(false);
-                    }}
-                    value={universityEndDate2}
-                    invalid={universityEndDateError2}
-                  />
-                </EducationContainer>
-                <InputTextArea
-                  main={"აღწერა"}
-                  placeholder={"განათლების აღწერა"}
-                  onChange={(e: any) => {
-                    setUniversityDescription2(e.target.value);
-                    setUniversityDescriptionError2(false);
-                  }}
-                  textAreaRequired={unviersityDescriptionError2}
-                />
-                {/* აქ მთავრდება ედუქეიშენ კომპონენტი  */}
-              </InputInfo>
-            )}
-
-            <BackOrNextContainer>
-              <BackButton onClick={goBack}>ᲣᲙᲐᲜ</BackButton>
-              <ForwardButton onClick={sendFinalResult}>ᲓᲐᲡᲠᲣᲚᲔᲑᲐ</ForwardButton>
-            </BackOrNextContainer>
-          </InputInfo>
+          <EducationPage
+            universityName={universityName}
+            setUniversityName={setUniversityName}
+            universityNameError={universityNameError}
+            setShowDegree={setShowDegree}
+            showDegree={showDegree}
+            selectedDegree={selectedDegree}
+            selectedDegreeError={selectedDegreeError}
+            degree={degree}
+            setselectedDegree={setselectedDegree}
+            setselectedDegreeError={setselectedDegreeError}
+            setUniversityEndDate={setUniversityEndDate}
+            setUniversityEndDateError={setUniversityEndDateError}
+            universityEndDate={universityEndDate}
+            universityEndDateError={universityEndDateError}
+            setUniversityDescription={setUniversityDescription}
+            setUniversityDescriptionError={setUniversityDescriptionError}
+            unviersityDescriptionError={unviersityDescriptionError}
+            universityDescription={universityDescription}
+            addMoreEducation={addMoreEducation}
+            setAddMoreEducation={setAddMoreEducation}
+            universityName2={universityName2}
+            setUniversityName2={setUniversityName2}
+            universityNameError2={universityNameError2}
+            setShowDegree2={setShowDegree2}
+            showDegree2={showDegree2}
+            selectedDegree2={selectedDegree2}
+            selectedDegreeError2={selectedDegreeError2}
+            degree2={degree2}
+            setselectedDegree2={setselectedDegree2}
+            setselectedDegreeError2={setselectedDegreeError2}
+            setUniversityEndDate2={setUniversityEndDate2}
+            setUniversityEndDateError2={setUniversityEndDateError2}
+            universityEndDate2={universityEndDate2}
+            universityEndDateError2={universityEndDateError2}
+            setUniversityDescription2={setUniversityDescription2}
+            setUniversityDescriptionError2={setUniversityDescriptionError2}
+            unviersityDescriptionError2={unviersityDescriptionError2}
+            universityDescription2={universityDescription2}
+            goBack2={goBack2}
+            sendFinalResult={sendFinalResult}
+          />
         )}
-
-        {/* meore education komponenti */}
       </MainInput>
 
       <MainOutput>
@@ -873,6 +876,7 @@ export default function PersonalInfo() {
                 <AboutMe />
               )}
             </MainWithImg>
+
             {photoImage ? <CvImage src={photoImage} alt="" /> : <HiddenImg />}
           </CvFirstPart>
           {(position || employer || startDate || endDate || aboutJob) && (

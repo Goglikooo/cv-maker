@@ -7,19 +7,21 @@ interface Props {
   onChange: any;
   textAreaValue?: string;
   textAreaRequired?: boolean;
+  id?: string;
 }
 
 export default function InputTextArea(props: Props) {
-  const { main, placeholder, onChange, textAreaValue, textAreaRequired } =
+  const { main, placeholder, onChange, textAreaValue, textAreaRequired, id } =
     props;
 
   return (
     <PersonInputContainer>
-      <InputName>{main}</InputName>
+      <InputName htmlFor={id}>{main}</InputName>
       <AboutInput
         placeholder={placeholder}
         onChange={onChange}
         value={textAreaValue}
+        id={id}
       />
       {textAreaRequired && <ErrorImage src={error} />}
     </PersonInputContainer>
@@ -37,7 +39,7 @@ const PersonInputContainer = styled.div`
   z-index: 1;
 `;
 
-const InputName = styled.h4`
+const InputName = styled.label`
   font-family: "HelveticaNeue";
   font-size: 16px;
   font-weight: 500;
